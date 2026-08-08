@@ -9,7 +9,7 @@ export default function AboutPage() {
     <>
       {/* Banner */}
       <PageBanner
-        title="About Central Biomedicals"
+        title="About Global Biomedical"
         subtitle="Delivering trusted diagnostic and biomedical technologies with innovation, quality, and healthcare precision."
       />
 
@@ -57,7 +57,7 @@ export default function AboutPage() {
             />
 
             <p className="mt-8 leading-8 text-[#6B5F55] text-lg">
-              At Central Biomedicals, we are committed to delivering
+              At Global Biomedical, we are committed to delivering
               premium-quality healthcare and biomedical technologies
               designed to improve diagnostics, laboratory performance,
               and medical efficiency.

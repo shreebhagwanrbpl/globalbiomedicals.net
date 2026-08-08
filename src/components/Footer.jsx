@@ -45,7 +45,7 @@ export default function Footer() {
           doc(
             db,
             "websites",
-            "centralbiomedicals",
+            "globalbiomedicalsnet",
             "pages",
             "contact"
           )
@@ -76,7 +76,7 @@ export default function Footer() {
           doc(
             db,
             "websites",
-            "centralbiomedicals",
+            "globalbiomedicalsnet",
             "districts",
             district
           )
@@ -162,9 +162,9 @@ export default function Footer() {
           <div>
 
             <h2 className="text-3xl font-extrabold text-[#6F4E37]">
-              Central
+              Global
               <span className="text-[#2F241E]">
-                {" "}Biomedicals
+                {" "}Biomedical
               </span>
             </h2>
 
@@ -316,7 +316,7 @@ export default function Footer() {
         <div className="mt-14 flex flex-col items-center justify-between border-t border-[#E6D8C8] pt-6 text-sm text-[#7A6A5E] md:flex-row">
 
           <p>
-            © 2026 <span className="font-semibold text-[#6F4E37]">Central Biomedicals</span>. All rights reserved.
+            © 2026 <span className="font-semibold text-[#6F4E37]">Global Biomedical</span>. All rights reserved.
           </p>
 
           <p className="mt-3 md:mt-0">

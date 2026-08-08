@@ -54,10 +54,10 @@ export default function Navbar() {
         <Link href={makeLink("/")}>
           <h1 className="text-xl md:text-2xl font-extrabold tracking-tight text-[#6F4E37]">
 
-            Central
+            Global
 
             <span className="text-[#2F241E]">
-              {" "}Biomedicals
+              {" "}Biomedical
             </span>
 
           </h1>

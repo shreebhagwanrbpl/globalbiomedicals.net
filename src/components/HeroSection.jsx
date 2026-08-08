@@ -30,7 +30,7 @@ export default function HeroSection({ city }) {
     const fetchHeroData = async () => {
       try {
         const snap = await getDoc(
-          doc(db, "websites", "centralbiomedicals", "pages", "home")
+          doc(db, "websites", "globalbiomedicalsnet", "pages", "home")
         );
 
         if (snap.exists()) {
@@ -197,7 +197,7 @@ export default function HeroSection({ city }) {
 
             <Image
               src={CBG}
-              alt="Central Biomedical"
+              alt="Global Biomedical"
               width={1200}
               height={900}
               className="h-[350px] w-full rounded-[28px] object-cover object-[20%_center] sm:h-[450px] lg:h-[550px]"
