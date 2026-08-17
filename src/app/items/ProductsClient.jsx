@@ -11,6 +11,8 @@ import {
   Search,
   ChevronRight,
   ChevronUp,
+  Download,
+  FileText,
 } from "lucide-react";
 import { Toaster, toast } from "react-hot-toast";
 import PageBanner from "@/components/PageBanner";
@@ -362,6 +364,33 @@ export default function ProductsClient({ initialProducts = [], district = null, 
             description="Discover high-quality diagnostic and biomedical technologies tailored for laboratories, healthcare institutions, and modern diagnostics."
             center
           />
+
+          {/* Brochure PDF Download Banner */}
+          {/* <div className="max-w-4xl mx-auto mt-8 bg-gradient-to-r from-[#6F4E37] via-[#8B5A2B] to-[#A06A3B] p-6 sm:p-8 rounded-3xl shadow-xl text-white flex flex-col sm:flex-row items-center justify-between gap-6 border border-[#E6D8C8]">
+            <div className="flex items-center gap-4">
+              <div className="p-4 rounded-2xl bg-white/10 backdrop-blur border border-white/20 shrink-0">
+                <FileText size={32} className="text-[#F8EEDF]" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white sm:text-2xl">
+                  Global Biomedicals Catalog & Brochure
+                </h3>
+                <p className="text-sm text-[#F8EEDF] mt-1">
+                  Download our official product brochure PDF with complete specifications for CBC machines, analyzers & lab instruments.
+                </p>
+              </div>
+            </div>
+            <a
+              href="/Global-Biomedicals-Brochure.pdf"
+              download="Global-Biomedicals-Brochure.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="shrink-0 flex items-center gap-2.5 bg-white text-[#6F4E37] hover:bg-[#F8F5F0] font-bold px-6 py-3.5 rounded-2xl shadow-lg transition-all duration-300 hover:scale-105"
+            >
+              <Download size={20} className="text-[#8B5A2B]" />
+              Download Brochure PDF
+            </a>
+          </div> */}
         </div>
 
         {/* Search */}

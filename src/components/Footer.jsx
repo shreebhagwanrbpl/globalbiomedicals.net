@@ -10,6 +10,7 @@ import {
   Phone,
   MapPin,
 } from "lucide-react";
+import { FaInstagram, FaFacebook } from "react-icons/fa";
 
 export default function Footer() {
   const [contactInfo, setContactInfo] =
@@ -37,6 +38,12 @@ export default function Footer() {
       !staticRoutes.includes(pathParts[0])
       ? pathParts[0]
       : "";
+
+  const phoneNumbers = [
+    "+91 9257984336",
+    "+91 8529833535",
+    "+91 9983301657",
+  ];
 
   useEffect(() => {
     const loadContact = async () => {
@@ -92,11 +99,6 @@ export default function Footer() {
 
     loadDistrict();
   }, [district]);
-
-  const phone =
-    contactInfo.find(
-      (x) => x.label === "Phone Number"
-    )?.value || "";
 
   const email =
     contactInfo.find(
@@ -172,6 +174,32 @@ export default function Footer() {
               Delivering trusted diagnostic and biomedical solutions with
               innovation, quality, and precision healthcare support.
             </p>
+
+            {/* Social Media Links */}
+            <div className="mt-6">
+              <h4 className="text-sm font-bold text-[#2F241E] mb-3">Connect With Us:</h4>
+              <div className="flex items-center gap-3">
+                <a
+                  href="https://www.instagram.com/globalbiomedicals/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 rounded-xl border border-[#D9C7B5] bg-[#FFFDF9] px-4 py-2.5 text-sm font-semibold text-[#6F4E37] shadow-sm transition hover:border-[#8B5A2B] hover:bg-[#8B5A2B] hover:text-white"
+                >
+                  <FaInstagram size={18} className="text-[#E1306C] group-hover:text-white" />
+                  Instagram
+                </a>
+
+                <a
+                  href="https://www.facebook.com/people/Global-Biomedicals-Inc/100090524869295/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 rounded-xl border border-[#D9C7B5] bg-[#FFFDF9] px-4 py-2.5 text-sm font-semibold text-[#6F4E37] shadow-sm transition hover:border-[#8B5A2B] hover:bg-[#8B5A2B] hover:text-white"
+                >
+                  <FaFacebook size={18} className="text-[#1877F2] group-hover:text-white" />
+                  Facebook
+                </a>
+              </div>
+            </div>
 
           </div>
 
@@ -252,18 +280,18 @@ export default function Footer() {
 
           </div>
 
-          {/* Contact */}
+          {/* Contact Info */}
           <div>
 
             <h3 className="mb-5 text-lg font-bold text-[#2F241E]">
               Contact Info
             </h3>
 
-            <div className="space-y-5">
+            <div className="space-y-4">
 
               <div className="flex items-start gap-3">
 
-                <div className="rounded-xl bg-[#F3E7D9] p-2">
+                <div className="rounded-xl bg-[#F3E7D9] p-2 mt-1">
                   <MapPin
                     size={18}
                     className="text-[#8B5A2B]"
@@ -271,40 +299,51 @@ export default function Footer() {
                 </div>
 
                 <p className="leading-7 text-[#6B5F55]">
-                  {dynamicAddress}
+                  {dynamicAddress || "Global Biomedical, India"}
                 </p>
 
               </div>
 
-              <div className="flex items-center gap-3">
+              {/* All Phone Numbers */}
+              <div className="flex items-start gap-3">
 
-                <div className="rounded-xl bg-[#F3E7D9] p-2">
+                <div className="rounded-xl bg-[#F3E7D9] p-2 mt-1">
                   <Phone
                     size={18}
                     className="text-[#8B5A2B]"
                   />
                 </div>
 
-                <p className="text-[#6B5F55]">
-                  {phone}
-                </p>
-
-              </div>
-
-              <div className="flex items-center gap-3">
-
-                <div className="rounded-xl bg-[#F3E7D9] p-2">
-                  <Mail
-                    size={18}
-                    className="text-[#8B5A2B]"
-                  />
+                <div className="flex flex-col gap-1">
+                  {phoneNumbers.map((num, idx) => (
+                    <a
+                      key={idx}
+                      href={`tel:${num.replace(/\s+/g, "")}`}
+                      className="text-[#6B5F55] hover:text-[#8B5A2B] transition-colors"
+                    >
+                      {num}
+                    </a>
+                  ))}
                 </div>
 
-                <p className="text-[#6B5F55] break-all">
-                  {email}
-                </p>
-
               </div>
+
+              {email && (
+                <div className="flex items-center gap-3">
+
+                  <div className="rounded-xl bg-[#F3E7D9] p-2">
+                    <Mail
+                      size={18}
+                      className="text-[#8B5A2B]"
+                    />
+                  </div>
+
+                  <p className="text-[#6B5F55] break-all">
+                    {email}
+                  </p>
+
+                </div>
+              )}
 
             </div>
 
@@ -319,13 +358,30 @@ export default function Footer() {
             © 2026 <span className="font-semibold text-[#6F4E37]">Global Biomedical</span>. All rights reserved.
           </p>
 
-          <p className="mt-3 md:mt-0">
-            Designed with precision for modern diagnostics.
-          </p>
+          <div className="mt-3 flex items-center gap-4 md:mt-0">
+            <a
+              href="https://www.instagram.com/globalbiomedicals/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#6F4E37] hover:text-[#E1306C] transition-colors"
+              aria-label="Instagram"
+            >
+              <FaInstagram size={18} />
+            </a>
+            <a
+              href="https://www.facebook.com/people/Global-Biomedicals-Inc/100090524869295/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#6F4E37] hover:text-[#1877F2] transition-colors"
+              aria-label="Facebook"
+            >
+              <FaFacebook size={18} />
+            </a>
+          </div>
 
         </div>
 
       </div>
     </footer>
   );
-}
+}

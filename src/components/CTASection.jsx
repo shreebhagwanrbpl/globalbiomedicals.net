@@ -113,7 +113,18 @@ export default function CTASection({ city }) {
                   and healthcare support.
                 </p>
 
-                <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+                <div className="mt-6 space-y-2 border-t border-[#E6D8C8] pt-4 text-sm font-semibold text-[#6F4E37]">
+                  <p className="text-xs text-[#8B5A2B] font-bold uppercase tracking-wider">Direct Hotline:</p>
+                  <div className="flex flex-wrap gap-2">
+                    <a href="tel:+919257984336" className="hover:text-[#8B5A2B] underline">+91 9257984336</a>
+                    <span>•</span>
+                    <a href="tel:+918529833535" className="hover:text-[#8B5A2B] underline">+91 8529833535</a>
+                    <span>•</span>
+                    <a href="tel:+919983301657" className="hover:text-[#8B5A2B] underline">+91 9983301657</a>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex flex-col gap-4 sm:flex-row">
 
                   <Link
                     href={makeLink("/contact")}
@@ -132,7 +143,7 @@ export default function CTASection({ city }) {
                   </Link>
 
                   <a
-                    href="tel:+919876543210"
+                    href="tel:+919257984336"
                     className="rounded-2xl border border-[#D7C2AE] bg-white px-6 py-4 text-center font-semibold text-[#6F4E37] transition-all duration-300 hover:-translate-y-1 hover:bg-[#F8F5F0] hover:border-[#8B5A2B]"
                   >
                     Call Now

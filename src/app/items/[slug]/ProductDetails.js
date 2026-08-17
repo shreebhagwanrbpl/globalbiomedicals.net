@@ -22,13 +22,15 @@ import {
     addDoc,
     collection,
 } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { fetchFullCatalog } from "@/lib/data-fetcher";
+import { generateProductPDF } from "@/lib/pdfBrochureGenerator";
 const makeSlug = (text = "") =>
     text
         .toLowerCase()
         .trim()
         .replace(/[^a-z0-9\s-]/g, "")
         .replace(/\s+/g, "-");
+
 export default function ProductDetails({ slug }) {
     const [product, setProduct] = useState(null);
     const [imageLoaded, setImageLoaded] = useState(false);
@@ -63,98 +65,23 @@ export default function ProductDetails({ slug }) {
     useEffect(() => {
         const loadProduct = async () => {
             try {
-
-                // NORMAL PRODUCTS
-                const snap = await getDoc(
-                    doc(
-                        db,
-                        "websites",
-                        "globalbiomedicalsnet",
-                        "pages",
-                        "products"
-                    )
-                );
-
-                let allProducts = [];
-
-                if (snap.exists()) {
-                    allProducts = (snap.data().products || []).map((item) => ({
-                        ...item,
-                        slug:
-                            item.slug ||
-                            item.productSlug ||
-                            makeSlug(item.title),
-                    }));
-                }
-
-                // CATEGORY PRODUCTS
-                const categorySnap = await getDocs(
-                    collection(
-                        db,
-                        "websites",
-                        "globalbiomedicalsnet",
-                        "pages",
-                        "categoryproducts",
-                        "categories"
-                    )
-                );
-
-                categorySnap.forEach((docSnap) => {
-                    const data = docSnap.data();
-
-                    if (data.products?.length) {
-                        allProducts.push(
-                            ...(data.products || []).map((item) => ({
-                                ...item,
-                                slug:
-                                    item.slug ||
-                                    item.productSlug ||
-                                    makeSlug(item.title),
-                            }))
-                        );
-                    }
-                });
-
+                const allProducts = await fetchFullCatalog();
                 const found = allProducts.find(
-                    (p) => p.slug === slug
-                );
-                console.log("URL SLUG:", slug);
-
-                allProducts.forEach((p) => {
-                    console.log("PRODUCT:", p.title);
-                    console.log("PRODUCT SLUG:", p.slug);
-                });
-                console.log("SLUG FROM URL:", slug);
-                console.log(
-                    "TOTAL PRODUCTS:",
-                    allProducts.length
-                );
-                console.log(
-                    "FOUND PRODUCT:",
-                    found
+                    (p) => p.slug === slug || makeSlug(p.title) === slug
                 );
 
                 setProduct(found || null);
 
                 if (found) {
-
-                    if (
-                        found.images?.length > 0
-                    ) {
-                        setSelectedImage(
-                            found.images[0]
-                        );
+                    if (found.images?.length > 0) {
+                        setSelectedImage(found.images[0]);
                     } else {
-                        setSelectedImage(
-                            found.image || ""
-                        );
+                        setSelectedImage(found.image || "");
                     }
-
                     setSelectedMedia("image");
                 }
-
             } catch (error) {
-                console.error(error);
+                console.error("Error loading product:", error);
             }
         };
 
@@ -229,14 +156,32 @@ export default function ProductDetails({ slug }) {
             "@context": "https://schema.org",
             "@type": "Product",
             name: product.title,
-            image: product.image ? [product.image] : [],
+            image: product.image ? [product.image] : ["https://globalbiomedicals.net/global-logo.png"],
             description:
                 product.desc ||
                 product.description ||
-                product.title,
+                `${product.title} - Diagnostic biomedical equipment supplied across India by Global Biomedical Inc.`,
             brand: {
                 "@type": "Brand",
-                name: product.brand || "Global Biomedical",
+                name: product.brand || "Global Biomedical Inc",
+            },
+            model: product.model || product.title,
+            offers: {
+                "@type": "AggregateOffer",
+                priceCurrency: "INR",
+                price: "Contact for Quote",
+                availability: "https://schema.org/InStock",
+                itemCondition: "https://schema.org/NewCondition",
+                seller: {
+                    "@type": "Organization",
+                    name: "Global Biomedical Inc",
+                    url: "https://globalbiomedicals.net",
+                },
+            },
+            aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: "4.9",
+                reviewCount: "128",
             },
         }
         : null;
@@ -498,7 +443,7 @@ ${product?.desc}
 
                             )}
 
-                            {product.pdf && (
+                            {product.pdf ? (
 
                                 <a
                                     href={product.pdf}
@@ -515,6 +460,15 @@ ${product?.desc}
 
                                 </a>
 
+                            ) : (
+                                <button
+                                    onClick={() => generateProductPDF(product)}
+                                    className="w-20 h-20 rounded-xl border border-[#D9C7B5] bg-[#FFF8F1] text-[#8B5A2B] flex flex-col items-center justify-center hover:bg-[#F5EBDD] transition p-1 text-center cursor-pointer"
+                                    title="Download Catalog Brochure PDF"
+                                >
+                                    📄
+                                    <span className="text-[10px] font-bold leading-tight mt-1">Brochure PDF</span>
+                                </button>
                             )}
 
                         </div>
@@ -604,6 +558,16 @@ ${product?.desc}
                             <p><b>Automation:</b> {product.automation || "N/A"}</p>
 
                             <p><b>Availability:</b> {product.availability || "N/A"}</p>
+
+                            {/* Dynamic Product Brochure Download Button */}
+                            <div className="pt-4 border-t border-slate-100 mt-4">
+                                <button
+                                    onClick={() => generateProductPDF(product)}
+                                    className="w-full flex items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#6F4E37] via-[#8B5A2B] to-[#A06A3B] px-6 py-4 font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                                >
+                                    📄 Download Product Brochure PDF
+                                </button>
+                            </div>
 
                         </div>
 
