@@ -1,139 +1,111 @@
-import { db } from "@/lib/firebase";
 import {
-    collection,
-    getDocs,
-    doc,
-    getDoc,
-} from "firebase/firestore";
+    fetchFullCatalog,
+    fetchCategoriesSummary,
+    fetchBrandsSummary,
+    fetchDistricts
+} from "@/lib/data-fetcher-server";
+import { SITE_URL } from "@/lib/constants";
+
+export const revalidate = 86400; // Revalidate sitemap daily
 
 export default async function sitemap() {
-    const baseUrl =
-        "https://globalbiomedicals.net";
-
     const urls = [];
 
-    // Static Pages
-    urls.push(
-        {
-            url: baseUrl,
+    // 1. Static Core Pages
+    const staticPages = [
+        "",
+        "/about",
+        "/services",
+        "/contact",
+        "/items"
+    ];
+
+    staticPages.forEach((path) => {
+        urls.push({
+            url: `${SITE_URL}${path}`,
             lastModified: new Date(),
-        },
-        {
-            url: `${baseUrl}/about`,
-            lastModified: new Date(),
-        },
-        {
-            url: `${baseUrl}/services`,
-            lastModified: new Date(),
-        },
-        {
-            url: `${baseUrl}/contact`,
-            lastModified: new Date(),
-        },
-        {
-            url: `${baseUrl}/items`,
-            lastModified: new Date(),
-        }
-    );
+            changeFrequency: "weekly",
+            priority: path === "" ? 1.0 : 0.8,
+        });
+    });
 
     try {
-        // DISTRICTS
-        const districtSnap =
-            await getDocs(
-                collection(
-                    db,
-                    "websites",
-                    "globalbiomedicalsnet",
-                    "districts"
-                )
-            );
+        // 2. Category Hubs
+        const categories = await fetchCategoriesSummary();
+        categories.forEach((cat) => {
+            urls.push({
+                url: `${SITE_URL}/category/${cat.slug}`,
+                lastModified: new Date(),
+                changeFrequency: "weekly",
+                priority: 0.85,
+            });
+        });
 
-        const districts =
-            districtSnap.docs.map(
-                (doc) => doc.data()
-            );
+        // 3. Brand Hubs
+        const brands = await fetchBrandsSummary();
+        brands.forEach((brand) => {
+            urls.push({
+                url: `${SITE_URL}/brand/${brand.slug}`,
+                lastModified: new Date(),
+                changeFrequency: "weekly",
+                priority: 0.8,
+            });
+        });
 
-        districts.forEach((district) => {
-            const slug =
-                district.slug;
+        // 4. Primary Authoritative Product Pages
+        const products = await fetchFullCatalog();
+        products.forEach((product) => {
+            if (!product.slug) return;
 
-            if (!slug) return;
+            urls.push({
+                url: `${SITE_URL}/items/${product.slug}`,
+                lastModified: new Date(),
+                changeFrequency: "weekly",
+                priority: 0.9,
+            });
+        });
+
+        // 5. Legitimate District Landing Hubs
+        const districts = await fetchDistricts();
+        districts.forEach((d) => {
+            if (!d.slug) return;
 
             urls.push(
                 {
-                    url: `${baseUrl}/${slug}`,
-                    lastModified:
-                        new Date(),
+                    url: `${SITE_URL}/${d.slug}`,
+                    lastModified: new Date(),
+                    changeFrequency: "monthly",
+                    priority: 0.75,
                 },
                 {
-                    url: `${baseUrl}/${slug}/about`,
-                    lastModified:
-                        new Date(),
+                    url: `${SITE_URL}/${d.slug}/about`,
+                    lastModified: new Date(),
+                    changeFrequency: "monthly",
+                    priority: 0.6,
                 },
                 {
-                    url: `${baseUrl}/${slug}/services`,
-                    lastModified:
-                        new Date(),
+                    url: `${SITE_URL}/${d.slug}/services`,
+                    lastModified: new Date(),
+                    changeFrequency: "monthly",
+                    priority: 0.6,
                 },
                 {
-                    url: `${baseUrl}/${slug}/contact`,
-                    lastModified:
-                        new Date(),
+                    url: `${SITE_URL}/${d.slug}/contact`,
+                    lastModified: new Date(),
+                    changeFrequency: "monthly",
+                    priority: 0.6,
                 },
                 {
-                    url: `${baseUrl}/${slug}/items`,
-                    lastModified:
-                        new Date(),
+                    url: `${SITE_URL}/${d.slug}/items`,
+                    lastModified: new Date(),
+                    changeFrequency: "weekly",
+                    priority: 0.7,
                 }
             );
         });
 
-        // PRODUCTS
-        const productDoc =
-            await getDoc(
-                doc(
-                    db,
-                    "websites",
-                    "globalbiomedicalsnet",
-                    "pages",
-                    "products"
-                )
-            );
-
-        const products =
-            productDoc.data()
-                ?.products || [];
-
-        products.forEach(
-            (product) => {
-                if (!product.slug) return;
-
-                // Main Product URL
-                urls.push({
-                    url: `${baseUrl}/items/${product.slug}`,
-                    lastModified:
-                        new Date(),
-                });
-
-                // District Product URLs
-                districts.forEach(
-                    (district) => {
-                        if (!district.slug) return;
-
-                        urls.push({
-                            url: `${baseUrl}/${district.slug}/items/${product.slug}`,
-                            lastModified:
-                                new Date(),
-                        });
-                    }
-                );
-            }
-        );
     } catch (error) {
-        console.error(
-            "Sitemap Error:",
-            error
-        );
+        console.error("Sitemap Generation Error:", error);
     }
 
     return urls;

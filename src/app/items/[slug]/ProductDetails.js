@@ -163,9 +163,9 @@ export default function ProductDetails({ slug }) {
                 `${product.title} - Diagnostic biomedical equipment supplied across India by Global Biomedical Inc.`,
             brand: {
                 "@type": "Brand",
-                name: product.brand || "Global Biomedical Inc",
+                name: product.brand && product.brand !== "N/A" ? product.brand : "Global Biomedical Inc",
             },
-            model: product.model || product.title,
+            model: product.model && product.model !== "N/A" ? product.model : product.title,
             offers: {
                 "@type": "AggregateOffer",
                 priceCurrency: "INR",
@@ -178,11 +178,39 @@ export default function ProductDetails({ slug }) {
                     url: "https://globalbiomedicals.net",
                 },
             },
-            aggregateRating: {
-                "@type": "AggregateRating",
-                ratingValue: "4.9",
-                reviewCount: "128",
-            },
+        }
+        : null;
+
+    const breadcrumbSchema = product
+        ? {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+                {
+                    "@type": "ListItem",
+                    position: 1,
+                    name: "Home",
+                    item: "https://globalbiomedicals.net",
+                },
+                {
+                    "@type": "ListItem",
+                    position: 2,
+                    name: "Products",
+                    item: "https://globalbiomedicals.net/items",
+                },
+                {
+                    "@type": "ListItem",
+                    position: 3,
+                    name: product.category || "Biomedical Equipment",
+                    item: `https://globalbiomedicals.net/category/${makeSlug(product.category || "biomedical-equipment")}`,
+                },
+                {
+                    "@type": "ListItem",
+                    position: 4,
+                    name: product.title,
+                    item: `https://globalbiomedicals.net/items/${product.slug || slug}`,
+                },
+            ],
         }
         : null;
 
@@ -196,15 +224,15 @@ export default function ProductDetails({ slug }) {
                     name: `What is ${product.title} used for?`,
                     acceptedAnswer: {
                         "@type": "Answer",
-                        text: `${product.title} is used in hospitals, pathology labs and diagnostic centres.`,
+                        text: `${product.title} is used in hospitals, pathology labs and diagnostic centres for routine and specialized testing.`,
                     },
                 },
                 {
                     "@type": "Question",
-                    name: "Do you provide installation support?",
+                    name: `Do you provide installation and service for ${product.title}?`,
                     acceptedAnswer: {
                         "@type": "Answer",
-                        text: "Yes, installation and technical support are available.",
+                        text: "Yes, Global Biomedical provides complete on-site installation, commissioning, user training, and AMC/CMC technical support.",
                     },
                 },
             ],
@@ -336,13 +364,32 @@ ${product?.desc}
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{
+                    __html: JSON.stringify(breadcrumbSchema),
+                }}
+            />
+
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
                     __html: JSON.stringify(faqSchema),
                 }}
             />
             <div className="container-custom">
-                <div className="mb-6 text-sm text-slate-500">
-                    Home / Products / {product.title}
-                </div>
+                <nav aria-label="Breadcrumb" className="mb-6 text-sm text-slate-500 flex flex-wrap items-center gap-1.5 font-medium">
+                    <a href="/" className="hover:text-sky-600 transition">Home</a>
+                    <span>/</span>
+                    <a href="/items" className="hover:text-sky-600 transition">Products</a>
+                    <span>/</span>
+                    {product.category && (
+                        <>
+                            <a href={`/category/${makeSlug(product.category)}`} className="hover:text-sky-600 transition">
+                                {product.category}
+                            </a>
+                            <span>/</span>
+                        </>
+                    )}
+                    <span className="text-slate-900 font-semibold">{product.title}</span>
+                </nav>
                 {/* Top Section */}
 
                 <div className="grid lg:grid-cols-2 gap-12">
