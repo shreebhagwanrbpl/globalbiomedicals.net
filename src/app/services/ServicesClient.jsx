@@ -137,16 +137,16 @@ export default function ServicesClient() {
     <>
       <PageBanner
         title="Biomedical & Diagnostic Services"
-        subtitle="Delivering turnkey hospital solutions, equipment AMC maintenance, NABL calibration, and diagnostic sales with healthcare precision."
+        subtitle="Complete lab setup, machine maintenance contracts, calibration, and reagent delivery—all with guaranteed quality and fast support."
       />
 
       <section className="section-padding bg-gradient-to-br from-[#FFFDF9] via-[#F8F5F0] to-[#F3ECE4]">
         <div className="container-custom">
           
           <SectionTitle
-            badge="Healthcare Solutions"
-            title="Comprehensive Biomedical & Lab Services"
-            description="We provide end-to-end support for pathology centers, multi-specialty hospitals, and diagnostic labs across North India."
+            badge="What We Do"
+            title="Complete Support for Medical Laboratories"
+            description="We provide hassle-free services for hospitals, pathology labs, and clinics across the region."
             center
           />
 
@@ -253,9 +253,9 @@ export default function ServicesClient() {
         <div className="container-custom relative z-10">
 
           <SectionTitle
-            badge="Execution Process"
-            title="Simple & Professional Service Workflow"
-            description="We follow a systematic procedure to ensure fast diagnosis, original spare parts deployment, and zero diagnostic downtime."
+            badge="How It Works"
+            title="Simple 4-Step Service Process"
+            description="Getting your lab gear set up or repaired is quick, straightforward, and transparent."
             center
           />
 
@@ -263,23 +263,23 @@ export default function ServicesClient() {
             {[
               {
                 step: "01",
-                title: "Requirement & Audit",
-                desc: "Consultation and site audit to understand diagnostic machine requirements or repair needs."
+                title: "Tell Us Your Need",
+                desc: "Contact our team by phone or inquiry form to explain what equipment or repair service you need."
               },
               {
                 step: "02",
-                title: "Solution Design",
-                desc: "Providing optimal equipment recommendations, AMC contracts, or spare replacement plans."
+                title: "Clear Quote & Plan",
+                desc: "We provide a clear, fair price quote along with a delivery or engineer visit schedule."
               },
               {
                 step: "03",
-                title: "Deployment & Calibration",
-                desc: "On-site installation, optical sensor alignment, and precision standard calibration."
+                title: "Setup & Calibration",
+                desc: "Our field engineer sets up your device, runs test samples, and aligns all calibration settings."
               },
               {
                 step: "04",
-                title: "24/7 Support",
-                desc: "Continuous preventive maintenance, staff training, and fast breakdown response."
+                title: "Ongoing Maintenance",
+                desc: "Enjoy regular checkups, quick phone help, and fast emergency visits whenever required."
               }
             ].map((item, index) => (
               <div

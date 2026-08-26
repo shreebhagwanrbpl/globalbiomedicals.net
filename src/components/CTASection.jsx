@@ -78,16 +78,15 @@ export default function CTASection({ city }) {
             <div>
 
               <span className="inline-flex items-center rounded-full border border-[#C49A6C] bg-white/10 px-5 py-2 text-sm font-semibold backdrop-blur">
-                Get In Touch
+                Quick Assistance
               </span>
 
               <h2 className="mt-6 text-4xl font-extrabold leading-tight lg:text-6xl">
-                Need Premium Biomedical Solutions?
+                Ready to Upgrade Your Lab?
               </h2>
 
               <p className="mt-6 max-w-xl text-lg leading-8 text-[#F8EEDF]">
-                Discover innovative diagnostic systems and trusted biomedical
-                technologies tailored for modern healthcare excellence.
+                Get reliable machines, genuine reagents, and instant technician support for your medical clinic or hospital today.
               </p>
 
             </div>
@@ -105,12 +104,11 @@ export default function CTASection({ city }) {
                 </div>
 
                 <h3 className="text-2xl font-bold text-[#2F241E]">
-                  Let's Talk
+                  Speak With Our Specialists
                 </h3>
 
                 <p className="mt-3 leading-7 text-[#6B5F55]">
-                  Contact our biomedical experts for consultation, equipment,
-                  and healthcare support.
+                  Reach out for equipment pricing, service contracts, or emergency repairs.
                 </p>
 
                 <div className="mt-6 space-y-2 border-t border-[#E6D8C8] pt-4 text-sm font-semibold text-[#6F4E37]">

@@ -214,7 +214,7 @@ export default function ContactPage({ city: initialCity }) {
       {/* Banner */}
       <PageBanner
         title={`Contact Us - ${selectedDistrict}`}
-        subtitle={`Connect with Global Biomedical for equipment sales, AMC maintenance, and 24/7 technical support in ${selectedDistrict} District.`}
+        subtitle={`Reach out to Global Biomedical for machine inquiries, service contracts, or 24/7 technical help in ${selectedDistrict} District.`}
       />
 
       {/* District Selector Header Bar */}
@@ -226,9 +226,9 @@ export default function ContactPage({ city: initialCity }) {
                 <MapPin size={20} />
               </div>
               <div>
-                <span className="text-xs text-[#A08875] font-medium uppercase tracking-wider">Select District Location</span>
+                <span className="text-xs text-[#A08875] font-medium uppercase tracking-wider">Choose District Location</span>
                 <h3 className="text-lg font-bold text-white">
-                  District Coverage Hub: <span className="text-[#C49A6C]">{selectedDistrict}</span>
+                  Active Support Hub: <span className="text-[#C49A6C]">{selectedDistrict}</span>
                 </h3>
               </div>
             </div>
@@ -264,15 +264,15 @@ export default function ContactPage({ city: initialCity }) {
           {/* Left Contact Details */}
           <div>
             <span className="inline-block text-[#8B5A2B] bg-[#FFF8F1] border border-[#D9C7B5] px-5 py-2 rounded-full text-xs font-semibold mb-4">
-              Regional Support Center
+              Direct Contact
             </span>
 
             <h2 className="text-3xl md:text-4xl font-extrabold text-[#2F241E] tracking-tight">
-              Get In Touch with Our Biomedical Team
+              We Are Here to Help Your Medical Lab
             </h2>
 
             <p className="mt-4 leading-7 text-[#6B5F55] text-base md:text-lg">
-              Whether you need urgent equipment repairs in {selectedDistrict}, AMC contract inquiries, or fresh reagent supplies, our field engineers and diagnostic experts are ready to assist.
+              Whether you need a quick quote on blood counters, help setting up a new lab room, or emergency machine repair in {selectedDistrict}, our team is ready to assist.
             </p>
 
             {/* Contact Cards */}
@@ -284,8 +284,8 @@ export default function ContactPage({ city: initialCity }) {
                   <Phone size={24} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-lg text-[#2F241E]">Helpline & Technical Support</h4>
-                  <p className="text-xs text-[#8B5A2B] font-semibold mt-0.5">24/7 Emergency Breakdown Assistance</p>
+                  <h4 className="font-bold text-lg text-[#2F241E]">Customer & Technical Support</h4>
+                  <p className="text-xs text-[#8B5A2B] font-semibold mt-0.5">24/7 Breakdown Assistance Available</p>
                   <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-slate-700 mt-2 text-sm font-semibold">
                     <a href="tel:+919257984336" className="hover:text-[#8B5A2B] transition-colors">+91 9257984336</a>
                     <a href="tel:+918529833535" className="hover:text-[#8B5A2B] transition-colors">+91 8529833535</a>
@@ -300,7 +300,7 @@ export default function ContactPage({ city: initialCity }) {
                   <Mail size={24} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-lg text-[#2F241E]">Official Email</h4>
+                  <h4 className="font-bold text-lg text-[#2F241E]">Email Inquiry</h4>
                   <p className="text-slate-600 mt-1 text-sm md:text-base font-medium">{email}</p>
                 </div>
               </div>
@@ -311,7 +311,7 @@ export default function ContactPage({ city: initialCity }) {
                   <MapPin size={24} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-lg text-[#2F241E]">{selectedDistrict} Regional Location</h4>
+                  <h4 className="font-bold text-lg text-[#2F241E]">{selectedDistrict} District Hub</h4>
                   <p className="text-slate-600 mt-1 text-sm md:text-base font-medium">
                     {dynamicDistrictAddress}
                   </p>
@@ -327,7 +327,7 @@ export default function ContactPage({ city: initialCity }) {
                   <Clock3 size={24} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-lg text-[#2F241E]">Working Hours</h4>
+                  <h4 className="font-bold text-lg text-[#2F241E]">Office Working Hours</h4>
                   <p className="text-slate-600 mt-1 text-sm font-medium">{hours}</p>
                 </div>
               </div>
@@ -339,13 +339,13 @@ export default function ContactPage({ city: initialCity }) {
           <div className="rounded-[40px] border border-[#E6D8C8] bg-[#FFFDF9] p-8 shadow-[0_20px_60px_rgba(111,78,55,0.12)] lg:p-10">
 
             <h3 className="text-2xl md:text-3xl font-extrabold text-[#2F241E]">
-              Send Us Message
+              Send Us a Message
             </h3>
 
             <div className="mt-3 h-1 w-20 rounded-full bg-gradient-to-r from-[#6F4E37] via-[#8B5A2B] to-[#C49A6C]" />
 
             <p className="mt-3 text-sm text-[#6B5F55]">
-              Fill out the inquiry form below for equipment quotes, maintenance, or service calls in <strong className="text-[#2F241E]">{selectedDistrict}</strong>.
+              Fill out the simple form below and our team will get in touch with you shortly.
             </p>
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-4">

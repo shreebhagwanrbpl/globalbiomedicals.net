@@ -60,23 +60,23 @@ export default function HeroSection({ city }) {
   const capabilities = [
     {
       icon: <Activity className="text-[#8B5A2B]" size={24} />,
-      title: "Diagnostic Equipment",
-      desc: "Hematology, CBC & Biochemistry Analyzers",
+      title: "Lab & Testing Equipment",
+      desc: "Modern CBC, Biochemistry & Hematology Machines",
     },
     {
       icon: <Microscope className="text-[#8B5A2B]" size={24} />,
-      title: "Lab Instruments",
-      desc: "ELISA Readers, Centrifuges & Reagents",
+      title: "Essential Reagents",
+      desc: "Fresh, Certified Reagents with Safe Temperature Delivery",
     },
     {
       icon: <ShieldCheck className="text-[#8B5A2B]" size={24} />,
-      title: "Certified Support",
-      desc: "Installation, Calibration & Warranty",
+      title: "Setup & Calibration",
+      desc: "Complete On-Site Assembly, Testing & Staff Training",
     },
     {
       icon: <HeartPulse className="text-[#8B5A2B]" size={24} />,
-      title: "Healthcare Solutions",
-      desc: "Reliable Systems for Hospitals & Clinics",
+      title: "24/7 Rapid Assistance",
+      desc: "Quick Repairs and Maintenance for Hospitals & Labs",
     },
   ];
 
@@ -98,7 +98,7 @@ export default function HeroSection({ city }) {
           {/* Top Badge */}
           <div className="inline-flex items-center gap-2 rounded-full border border-[#E6D8C8] bg-white/80 backdrop-blur-md px-5 py-2.5 text-xs sm:text-sm font-semibold text-[#6F4E37] shadow-md mb-8">
             <Sparkles size={16} className="text-[#8B5A2B] animate-pulse" />
-            Leading Biomedical & Diagnostic Solutions
+            Trusted Partner for Biomedical Equipment
           </div>
 
           {/* Main Title */}
@@ -111,7 +111,7 @@ export default function HeroSection({ city }) {
               </div>
             ) : (
               <>
-                {heroData.title || "Advanced Diagnostic & Biomedical Equipment"}
+                {heroData.title || "Reliable Medical Equipment & Lab Solutions"}
 
                 {city ? (
                   <>
@@ -122,7 +122,7 @@ export default function HeroSection({ city }) {
                   </>
                 ) : (
                   <span className="block mt-2 bg-gradient-to-r from-[#6F4E37] via-[#8B5A2B] to-[#C49A6C] bg-clip-text text-transparent">
-                    For Modern Healthcare
+                    Built for Modern Hospitals & Labs
                   </span>
                 )}
               </>
@@ -138,7 +138,7 @@ export default function HeroSection({ city }) {
           ) : (
             <p className="mt-6 max-w-2xl text-base sm:text-lg lg:text-xl leading-relaxed text-[#5E5146]">
               {heroData.description ||
-                "Supplying high-precision CBC machines, hematology & biochemistry analyzers, and laboratory equipment across India with complete installation and expert technical support."}
+                "We supply high-quality laboratory machines, diagnostic tools, and fast technical support so your medical facility runs smoothly every single day."}
 
               {city && (
                 <>
@@ -199,7 +199,7 @@ export default function HeroSection({ city }) {
                 10+
               </h3>
               <p className="mt-1 text-xs sm:text-sm font-medium text-[#6B5F55]">
-                Years Expertise
+                Years of Service
               </p>
             </div>
 
@@ -208,7 +208,7 @@ export default function HeroSection({ city }) {
                 500+
               </h3>
               <p className="mt-1 text-xs sm:text-sm font-medium text-[#6B5F55]">
-                Labs Served
+                Happy Healthcare Clients
               </p>
             </div>
 
@@ -217,7 +217,7 @@ export default function HeroSection({ city }) {
                 100%
               </h3>
               <p className="mt-1 text-xs sm:text-sm font-medium text-[#6B5F55]">
-                Quality Assured
+                On-Time Support
               </p>
             </div>
           </div>

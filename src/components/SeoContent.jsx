@@ -9,11 +9,11 @@ export default function SeoContent({ city = "" }) {
                 <div className="max-w-4xl">
 
                     <span className="inline-flex items-center rounded-full border border-[#D9C7B5] bg-[#FFF8F1] px-5 py-2 text-sm font-semibold text-[#8B5A2B] shadow-sm">
-                        About Our Services
+                        Learn More About Us
                     </span>
 
                     <h2 className="mt-6 text-4xl lg:text-5xl font-extrabold text-[#2F241E] leading-tight">
-                        Biomedical Equipment Supplier in {location}
+                        Your Trusted Medical Device Partner in {location}
                     </h2>
 
                     <div className="mt-5 h-1 w-28 rounded-full bg-gradient-to-r from-[#6F4E37] via-[#8B5A2B] to-[#C49A6C]" />
@@ -24,34 +24,22 @@ export default function SeoContent({ city = "" }) {
                 <div className="mt-10 space-y-6 text-lg leading-9 text-[#6B5F55]">
 
                     <p>
-                        Global Biomedical is a trusted supplier of biomedical
-                        and laboratory equipment in <strong className="text-[#6F4E37]">{location}</strong>.
-                        We provide CBC Machines, Hematology Analyzers,
-                        Biochemistry Analyzers, Urine Analyzers, ELISA Readers
-                        and diagnostic instruments for hospitals, pathology labs
-                        and healthcare facilities.
+                        Global Biomedical delivers reliable lab machinery and diagnostic testing tools right to your doorstep in <strong className="text-[#6F4E37]">{location}</strong>. 
+                        We supply CBC blood counters, biochemistry systems, electrolyte units, and diagnostic reagents to pathology labs, clinics, and hospitals.
                     </p>
 
                     <p>
-                        Our mission is to provide reliable and high-quality
-                        laboratory equipment to healthcare professionals across
-                        India. We work with diagnostic centres, hospitals,
-                        research laboratories and medical institutions to
-                        deliver advanced biomedical solutions.
+                        Our primary goal is to ensure every medical clinic and lab gets access to dependable machinery without high stress or long waiting times. 
+                        We work side by side with doctors, lab owners, and technician staff to choose the perfect devices for their setup.
                     </p>
 
                     <p>
-                        We offer installation assistance, product guidance and
-                        technical support for a wide range of laboratory
-                        instruments. Whether you are setting up a new
-                        diagnostic laboratory or upgrading existing equipment,
-                        our team can help you select the right solution.
+                        Beyond selling machines, we handle full setup, user training, and ongoing check-ups. 
+                        If you are opening a fresh pathology lab or upgrading old instruments, our engineers guide you through every choice.
                     </p>
 
                     <p>
-                        Global Biomedical supplies equipment across multiple
-                        districts and cities, helping healthcare providers
-                        improve testing efficiency and diagnostic accuracy.
+                        We operate across multiple towns and districts, ensuring prompt delivery, genuine spare parts, and fast on-site support whenever you need help.
                     </p>
 
                 </div>
@@ -62,7 +50,7 @@ export default function SeoContent({ city = "" }) {
                     <div className="flex items-center gap-4">
 
                         <h2 className="text-3xl lg:text-4xl font-extrabold text-[#2F241E]">
-                            Frequently Asked Questions
+                            Common Questions & Answers
                         </h2>
 
                         <div className="h-1 flex-1 rounded-full bg-gradient-to-r from-[#6F4E37] via-[#8B5A2B] to-transparent" />
@@ -73,46 +61,41 @@ export default function SeoContent({ city = "" }) {
 
                         <div className="rounded-3xl border border-[#E6D8C8] bg-[#FFFDF9] p-7 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
                             <h3 className="text-xl font-bold text-[#2F241E]">
-                                Do you supply biomedical equipment across India?
+                                How fast can you deliver biomedical machines to our lab?
                             </h3>
 
                             <p className="mt-3 leading-8 text-[#6B5F55]">
-                                Yes, we supply biomedical and laboratory equipment across multiple districts and cities.
+                                We usually deliver standard equipment and lab consumables within 24 to 48 hours depending on your city or district location.
                             </p>
                         </div>
 
                         <div className="rounded-3xl border border-[#E6D8C8] bg-[#FFFDF9] p-7 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
                             <h3 className="text-xl font-bold text-[#2F241E]">
-                                Which laboratory instruments do you provide?
+                                What main types of diagnostic tools can we order?
                             </h3>
 
                             <p className="mt-3 leading-8 text-[#6B5F55]">
-                                We provide CBC Machines, Hematology Analyzers,
-                                Biochemistry Analyzers, ELISA Readers,
-                                Urine Analyzers and other diagnostic equipment.
+                                You can order full-auto and semi-auto biochemistry analyzers, 3-part & 5-part CBC machines, urine strip readers, centrifuge machines, and testing reagents.
                             </p>
                         </div>
 
                         <div className="rounded-3xl border border-[#E6D8C8] bg-[#FFFDF9] p-7 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
                             <h3 className="text-xl font-bold text-[#2F241E]">
-                                Do you provide installation support?
+                                Do you help train our laboratory staff on new machines?
                             </h3>
 
                             <p className="mt-3 leading-8 text-[#6B5F55]">
-                                Yes, installation assistance and technical support
-                                are available depending on location and equipment type.
+                                Yes! Our certified biomedical engineers do complete hands-on setup and train your lab technicians so they can run tests easily.
                             </p>
                         </div>
 
                         <div className="rounded-3xl border border-[#E6D8C8] bg-[#FFFDF9] p-7 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
                             <h3 className="text-xl font-bold text-[#2F241E]">
-                                Who can purchase biomedical equipment?
+                                What happens if a machine stops working suddenly?
                             </h3>
 
                             <p className="mt-3 leading-8 text-[#6B5F55]">
-                                Hospitals, pathology labs, diagnostic centres,
-                                research laboratories and healthcare facilities
-                                can purchase equipment from us.
+                                We offer 24/7 on-call technical help. Our engineers visit your site promptly or assist over phone/video call to resolve any machine error.
                             </p>
                         </div>
 

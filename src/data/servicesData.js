@@ -1,14 +1,14 @@
 export const servicesData = [
   {
     id: "diagnostic-equipment-sales",
-    title: "Diagnostic Equipment Sales & Installation",
+    title: "Diagnostic Equipment Sales & Setup",
     category: "Sales & Supply",
-    desc: "Supply, installation, and deployment of top-tier biochemistry analyzers, hematology counters, electrolyte analyzers, and automated immunoassay systems.",
+    desc: "Supply, delivery, and full installation of blood counters, biochemistry systems, electrolyte analyzers, and automated test gear.",
     features: [
-      "OEM Certified New & Refurbished Machinery",
-      "Full On-site Installation & Commissioning",
-      "Comprehensive User & Lab Staff Training",
-      "Manufacturer Warranty & Software Setup"
+      "Brand-New & Carefully Serviced Machines",
+      "Complete On-Site Setup & Commissioning",
+      "Hands-On Staff & Technician Training",
+      "Official Manufacturer Warranty & Software Setup"
     ],
     turnaround: "24-48 Hours Delivery",
     badge: "Most Popular",
@@ -16,76 +16,76 @@ export const servicesData = [
   },
   {
     id: "biomedical-equipment-maintenance",
-    title: "AMC & CMC Maintenance Services",
+    title: "Annual Repair & Maintenance Contracts (AMC/CMC)",
     category: "Maintenance",
-    desc: "Annual Maintenance Contracts (AMC) and Comprehensive Maintenance Contracts (CMC) ensuring zero downtime for critical hospital & laboratory equipment.",
+    desc: "Routine servicing and complete cover contracts to make sure your hospital and clinic instruments never stop functioning.",
     features: [
-      "Preventive & Corrective Maintenance",
-      "Genuine Spare Parts Replacement",
-      "24/7 Emergency Breakdown Assistance",
-      "Scheduled Monthly Inspection & Tuning"
+      "Regular Preventive Inspections & Tuning",
+      "100% Genuine Spare Parts Replacement",
+      "Immediate Breakdown Emergency Visits",
+      "Scheduled Monthly Checkups"
     ],
-    turnaround: "Immediate Breakdown Response",
+    turnaround: "Fast Breakdown Visit",
     badge: "Essential",
     icon: "Wrench"
   },
   {
     id: "equipment-calibration-validation",
-    title: "Calibration & Quality Control Validation",
+    title: "Calibration & Quality Testing Service",
     category: "Calibration",
-    desc: "NABL/ISO standard compliant calibration, testing, and validation services ensuring maximum accuracy and precision for diagnostic results.",
+    desc: "Accurate testing and calibration service for diagnostic units so your lab reports remain 100% precise and reliable.",
     features: [
-      "Standard Reference Calibration Certificates",
-      "Photometer & Optical Sensor Alignment",
-      "Temperature & Pipette Calibration",
-      "Quality Assurance & Audit Compliance"
+      "Official Calibration Test Certificates",
+      "Sensor & Optical Alignment Tuning",
+      "Temperature & Pipette Accuracy Checks",
+      "Audit Support & Standard Compliance"
     ],
-    turnaround: "Same Day Certification",
+    turnaround: "Same Day Certificate",
     badge: "Certified",
     icon: "ShieldCheck"
   },
   {
     id: "reagents-consumables-supply",
-    title: "Reagents & Lab Consumables Supply",
+    title: "Fresh Reagents & Lab Consumables",
     category: "Sales & Supply",
-    desc: "Cold-chain managed delivery of high-grade diagnostic reagents, controls, calibrators, test kits, and hospital consumables.",
+    desc: "Cold-chain stored reagents, test kits, controls, and everyday lab supplies delivered fast to your location.",
     features: [
-      "Cold-Chain Logistics & Temperature Control",
-      "Original Equipment Manufacturer Reagents",
-      "Bulk Order Discounts & Recurring Delivery",
+      "Temperature-Controlled Cold Storage Delivery",
+      "Original & High-Purity Chemical Reagents",
+      "Special Discounts on Regular Bulk Orders",
       "Guaranteed Long Expiry Batches"
     ],
-    turnaround: "Same Day / Next Day Express",
-    badge: "Stocked",
+    turnaround: "Express 1-Day Delivery",
+    badge: "In Stock",
     icon: "FlaskConical"
   },
   {
     id: "turnkey-hospital-icu-setup",
-    title: "Turnkey Lab & Hospital Setup Consulting",
+    title: "New Lab & Clinic Planning Consulting",
     category: "Consulting",
-    desc: "Complete end-to-end setup consulting for pathology laboratories, ICUs, operation theaters, and diagnostic diagnostic centers.",
+    desc: "End-to-end guidance for opening new pathology laboratories, diagnostic centers, and hospital care units.",
     features: [
-      "Lab Architecture & Space Optimization",
-      "Power, Water & Environmental Planning",
-      "Regulatory Licensing & NABL Guidance",
-      "Budgeting & Equipment Selection"
+      "Lab Room Layout & Space Planning",
+      "Power, Water & Safety Setup Advice",
+      "Equipment Budgeting & Selection",
+      "Guidance on Licensing & Inspections"
     ],
-    turnaround: "Custom Project Timeline",
-    badge: "Turnkey",
+    turnaround: "Tailored Project Plan",
+    badge: "Full Setup",
     icon: "Stethoscope"
   },
   {
     id: "emergency-technical-support",
     title: "24/7 On-Call Technical Assistance",
     category: "Maintenance",
-    desc: "Round-the-clock technical support engineers ready for quick troubleshooting, emergency repair visits, and remote diagnosis.",
+    desc: "Round-the-clock telephone and on-site engineering support for rapid machine fixes whenever an issue pops up.",
     features: [
-      "Dedicated Technical Helpline",
-      "Remote Software & Error Code Diagnosis",
-      "Express Spare Parts Dispatch",
-      "Qualified Biomedical Field Engineers"
+      "Dedicated Direct Phone Helpline",
+      "Remote Software & Error Code Troubleshooting",
+      "Fast Spare Part Dispatch",
+      "Friendly Biomedical Field Engineers"
     ],
-    turnaround: "< 2 Hours On-Site Response",
+    turnaround: "Under 2 Hours Response",
     badge: "24/7 Helpline",
     icon: "Activity"
   }

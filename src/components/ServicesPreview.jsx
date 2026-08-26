@@ -15,27 +15,27 @@ export default function ServicesPreview() {
   const services = [
     {
       icon: <Microscope size={30} />,
-      title: "Diagnostic Equipment",
+      title: "Diagnostic Equipment Supply",
       description:
-        "Advanced diagnostic systems designed for accurate and efficient healthcare testing.",
+        "Top-grade blood analyzers and clinical testing machines delivered right to your facility.",
     },
     {
       icon: <FlaskConical size={30} />,
-      title: "Laboratory Solutions",
+      title: "Reagents & Lab Supplies",
       description:
-        "Reliable laboratory instruments and biomedical support for modern medical environments.",
+        "High-purity chemical reagents and everyday lab supplies kept in controlled cold storage.",
     },
     {
       icon: <ShieldCheck size={30} />,
-      title: "Maintenance Support",
+      title: "Equipment Repair & AMC",
       description:
-        "Professional technical support and maintenance for biomedical systems.",
+        "Annual maintenance and fast breakdown repairs to make sure your lab never faces downtime.",
     },
     {
       icon: <Stethoscope size={30} />,
-      title: "Healthcare Consultation",
+      title: "Complete Lab Setup",
       description:
-        "Expert guidance and consultation for healthcare and biomedical operations.",
+        "Step-by-step assistance in planning, equipping, and launching new pathology labs.",
     },
   ];
 
@@ -55,9 +55,9 @@ export default function ServicesPreview() {
         <div className="text-center max-w-3xl mx-auto">
 
           <SectionTitle
-            badge="Our Services"
-            title="Premium Diagnostic & Biomedical Services"
-            description="Providing advanced healthcare technologies, laboratory systems, and trusted biomedical solutions for modern diagnostics."
+            badge="What We Offer"
+            title="Complete Biomedical & Diagnostic Services"
+            description="From initial setup to routine servicing, we take care of all your medical laboratory needs."
             center
           />
 

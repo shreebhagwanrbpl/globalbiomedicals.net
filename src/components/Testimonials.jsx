@@ -6,22 +6,22 @@ import SectionTitle from "./SectionTitle";
 export default function Testimonials() {
   const reviews = [
     {
-      name: "Dr. Rajesh Kumar",
-      role: "Healthcare Specialist",
+      name: "Dr. R. K. Sharma",
+      role: "Pathology Lab Owner",
       review:
-        "Global Biomedical has consistently delivered reliable diagnostic equipment with outstanding support.",
+        "When our main biochemistry analyzer stopped working, Global Biomedical's engineer arrived within 2 hours. Fast, polite, and very reliable service!",
     },
     {
       name: "Amit Sharma",
-      role: "Lab Director",
+      role: "Chief Lab Technician",
       review:
-        "Professional service, premium products, and excellent biomedical consultation experience.",
+        "We bought a 5-part CBC machine from them. Delivery was quick, setup was smooth, and the training provided to our staff was super easy to follow.",
     },
     {
       name: "Neha Verma",
-      role: "Research Head",
+      role: "Clinic Operations Manager",
       review:
-        "Their healthcare solutions improved our laboratory efficiency significantly.",
+        "Their Annual Maintenance Contract (AMC) gives us complete peace of mind. Reagents are always fresh and delivered right on schedule.",
     },
   ];
 
@@ -35,9 +35,9 @@ export default function Testimonials() {
       <div className="container-custom relative z-10">
 
         <SectionTitle
-          badge="Testimonials"
-          title="What Our Clients Say"
-          description="Trusted by healthcare professionals, laboratories, and biomedical institutions."
+          badge="Real Feedback"
+          title="What Lab Directors & Doctors Say"
+          description="Read genuine experiences from medical staff and clinic owners who rely on our instruments and technical support."
           center
         />
 

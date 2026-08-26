@@ -24,61 +24,61 @@ import CTASection from "@/components/CTASection";
 
 export default function AboutClient() {
   const stats = [
-    { label: "Years of Industry Excellence", value: "10+", icon: <Clock className="w-6 h-6 text-[#8B5A2B]" /> },
-    { label: "Installed Biomedical Machines", value: "500+", icon: <Microscope className="w-6 h-6 text-[#8B5A2B]" /> },
-    { label: "Partner Hospitals & Labs", value: "250+", icon: <Building2 className="w-6 h-6 text-[#8B5A2B]" /> },
-    { label: "Maintenance Uptime Rate", value: "99.8%", icon: <TrendingUp className="w-6 h-6 text-[#8B5A2B]" /> },
+    { label: "Years Serving Healthcare", value: "10+", icon: <Clock className="w-6 h-6 text-[#8B5A2B]" /> },
+    { label: "Machines Installed", value: "500+", icon: <Microscope className="w-6 h-6 text-[#8B5A2B]" /> },
+    { label: "Partner Healthcare Units", value: "250+", icon: <Building2 className="w-6 h-6 text-[#8B5A2B]" /> },
+    { label: "Equipment Reliability Rate", value: "99.8%", icon: <TrendingUp className="w-6 h-6 text-[#8B5A2B]" /> },
   ];
 
   const coreValues = [
     {
       icon: <Target className="w-8 h-8 text-white" />,
       title: "Our Mission",
-      desc: "To empower healthcare providers and laboratories with world-class, reliable diagnostic machinery, precision reagents, and uninterrupted 24/7 technical support.",
+      desc: "To make advanced medical testing tools easy to access and simple to maintain for clinics of all sizes.",
       gradient: "from-[#6F4E37] to-[#8B5A2B]"
     },
     {
       icon: <Sparkles className="w-8 h-8 text-white" />,
       title: "Our Vision",
-      desc: "To be the leading and most trusted biomedical equipment and diagnostics partner across North India, driving medical innovation and affordable healthcare access.",
+      desc: "To be the most trusted and hassle-free biomedical partner across the region, making modern health diagnostics affordable for everyone.",
       gradient: "from-[#8B5A2B] to-[#C49A6C]"
     },
     {
       icon: <ShieldCheck className="w-8 h-8 text-white" />,
-      title: "Quality Promise",
-      desc: "We adhere strictly to international quality standards, ISO compliant calibration routines, and genuine OEM spare parts to guarantee accuracy in every test.",
+      title: "Quality Guarantee",
+      desc: "We inspect every instrument thoroughly, perform exact calibrations, and use only genuine manufacturer components.",
       gradient: "from-[#2F241E] to-[#6F4E37]"
     }
   ];
 
   const pillars = [
     {
-      title: "Premium Equipment",
-      desc: "High-end diagnostic technologies sourced from globally recognized leaders in medical innovation.",
+      title: "Top-Performing Instruments",
+      desc: "Tested diagnostic machines sourced directly from leading medical technology brands.",
       icon: <Microscope className="w-6 h-6 text-[#8B5A2B]" />
     },
     {
-      title: "Expert Engineering Support",
-      desc: "Certified biomedical engineers available round-the-clock for breakdown repairs & preventative care.",
+      title: "Fast Technical Assistance",
+      desc: "On-call engineers ready to visit your clinic and fix machine issues without delay.",
       icon: <Wrench className="w-6 h-6 text-[#8B5A2B]" />
     },
     {
-      title: "Cold-Chain Logistics",
-      desc: "Temperature-controlled distribution of diagnostic reagents ensuring 100% active chemical integrity.",
+      title: "Safe Reagent Storage",
+      desc: "Cold-chain distribution so chemical reagents stay fresh, active, and accurate.",
       icon: <HeartPulse className="w-6 h-6 text-[#8B5A2B]" />
     },
     {
-      title: "Compliance & Safety",
-      desc: "NABL & ISO compliant calibration procedures guaranteeing diagnostic precision & safety.",
+      title: "Verified Calibration",
+      desc: "Certified testing methods ensuring exact blood and chemical test readings every single day.",
       icon: <Award className="w-6 h-6 text-[#8B5A2B]" />
     }
   ];
 
   const certifications = [
-    { title: "ISO 9001:2015", subtitle: "Quality Management Certified" },
-    { title: "CE Compliant", subtitle: "International Safety Standards" },
-    { title: "NABL Traceable", subtitle: "Calibrated & Audited Standards" },
-    { title: "OEM Authorized", subtitle: "Direct Manufacturer Partner" }
+    { title: "ISO 9001:2015", subtitle: "Quality Standard Certified" },
+    { title: "CE Compliant", subtitle: "Meets Global Safety Rules" },
+    { title: "NABL Traceable", subtitle: "Accurate Testing Standards" },
+    { title: "OEM Authorized", subtitle: "Official Brand Distributor" }
   ];
 
   return (
@@ -86,7 +86,7 @@ export default function AboutClient() {
       {/* Banner */}
       <PageBanner
         title="About Global Biomedical"
-        subtitle="Pioneering trusted diagnostic technologies, biomedical equipment sales, and 24/7 engineering support with healthcare precision."
+        subtitle="Helping hospitals, clinics, and laboratories run smoothly with top-quality equipment, reagents, and round-the-clock technical support."
       />
 
       {/* Stats Counter Section */}
@@ -140,14 +140,14 @@ export default function AboutClient() {
                   10+
                 </div>
                 <div>
-                  <h4 className="font-bold text-[#2F241E] text-base">Decade of Trust</h4>
-                  <p className="text-xs text-[#6B5F55]">Delivering Medical Excellence</p>
+                  <h4 className="font-bold text-[#2F241E] text-base">Years of Trust</h4>
+                  <p className="text-xs text-[#6B5F55]">Supporting Healthcare Staff</p>
                 </div>
               </div>
             </div>
 
             <div className="absolute top-6 right-6 hidden sm:flex items-center gap-2 rounded-2xl bg-[#2F241E] text-white px-4 py-2.5 text-xs font-semibold shadow-lg border border-[#C49A6C]/30 z-20">
-              <CheckCircle2 size={16} className="text-[#C49A6C]" /> Verified Quality Supplier
+              <CheckCircle2 size={16} className="text-[#C49A6C]" /> Certified Service Partner
             </div>
           </div>
 
@@ -155,24 +155,24 @@ export default function AboutClient() {
           <div>
             <SectionTitle
               badge="Who We Are"
-              title="Your Trusted Partner in Biomedical & Diagnostic Excellence"
-              description="Global Biomedical stands at the forefront of healthcare technology distribution, hospital equipment maintenance, and laboratory automation."
+              title="Your Partner for Simple & Dependable Medical Gear"
+              description="Global Biomedical is dedicated to supplying reliable lab instruments, maintenance services, and setup guidance."
             />
 
             <p className="mt-6 leading-8 text-[#6B5F55] text-base md:text-lg">
-              Established with a commitment to transforming diagnostic accuracy, Global Biomedical supplies state-of-the-art hematology analyzers, biochemistry systems, ICU equipment, and high-purity laboratory reagents across Rajasthan and surrounding regions.
+              Global Biomedical was created to make diagnostic technology simple, transparent, and reliable. We supply blood counters, biochemistry analyzers, and lab tools to healthcare providers across the region.
             </p>
 
             <p className="mt-4 leading-8 text-[#6B5F55] text-base md:text-lg">
-              Our comprehensive approach combines top-tier OEM equipment sales with dedicated Annual Maintenance Contracts (AMC/CMC), ensuring that healthcare providers operate with maximum uptime and precision.
+              Our goal is not just selling machines—we partner with you for the long term. From initial delivery and room setup to annual maintenance contracts (AMC/CMC), we ensure your instruments never stop working when patients need them most.
             </p>
 
             <div className="mt-8 space-y-3">
               {[
-                "Authorized sales & service of leading diagnostic brands",
-                "Full turnkey laboratory setup and space planning",
-                "Dedicated team of certified biomedical field engineers",
-                "Cold-chain compliant reagent and control delivery"
+                "Direct partner for major medical device brands",
+                "Complete lab planning and machine layout guidance",
+                "Friendly, certified field engineers ready 24/7",
+                "Safe cold-chain delivery for reagents and controls"
               ].map((item, index) => (
                 <div key={index} className="flex items-center gap-3">
                   <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#8B5A2B]/15 text-[#8B5A2B]">
@@ -207,8 +207,8 @@ export default function AboutClient() {
         <div className="container-custom">
           <SectionTitle
             badge="Our Foundation"
-            title="Driven by Purpose & Healthcare Precision"
-            description="Our core values guide every installation, maintenance service, and client consultation."
+            title="Guided by High Standards & Genuine Care"
+            description="Our core values guide every installation, service visit, and client recommendation."
             center
           />
 
@@ -238,9 +238,9 @@ export default function AboutClient() {
       <section className="section-padding bg-gradient-to-br from-[#FFFDF9] via-[#F8F5F0] to-[#F3ECE4]">
         <div className="container-custom">
           <SectionTitle
-            badge="Why Healthcare Leaders Choose Us"
-            title="Pillars of Biomedical Excellence"
-            description="From equipment procurement to emergency repairs, we deliver uncompromising reliability."
+            badge="Why Healthcare Staff Choose Us"
+            title="Four Pillars of Our Service"
+            description="We promise clean execution, zero hassle, and reliable equipment performance."
             center
           />
 
@@ -270,13 +270,13 @@ export default function AboutClient() {
         <div className="container-custom">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <span className="inline-block text-[#C49A6C] bg-[#3D3028] border border-[#6F4E37] px-4 py-1.5 rounded-full text-xs font-semibold mb-3">
-              Standards & Compliance
+              Safety & Verification
             </span>
             <h3 className="text-3xl font-extrabold text-white">
-              Certified Diagnostic Quality & Safety
+              Approved Safety Standards & Audits
             </h3>
             <p className="text-[#A08875] text-sm mt-2">
-              Every equipment piece and calibration protocol meets rigorous domestic and international standards.
+              Every instrument we deliver follows international safety guidelines and accurate testing norms.
             </p>
           </div>
 
