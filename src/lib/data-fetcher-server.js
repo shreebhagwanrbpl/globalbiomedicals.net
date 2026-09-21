@@ -1,53 +1,32 @@
-import { fetchFullCatalog as fetchFullCatalogRaw } from "./data-fetcher";
-import { db } from "./firebase";
+import { fetchFullCatalogFromFirestore, makeSlug } from "./data-fetcher.js";
+import { db } from "./firebase.js";
 import { collection, getDocs } from "firebase/firestore";
-import { cache } from "react";
+import { getCompanyAndWebsiteConfig } from "./companyConfig.js";
 
-// Global in-memory cache for the server process
-let cachedCatalog = null;
-let cachedCatalogTimestamp = 0;
-const CACHE_TTL = 3600 * 1000; // 1 hour
+export { makeSlug };
 
-let cachedDistricts = null;
-let cachedDistrictsTimestamp = 0;
-
-export const makeSlug = (text = "") =>
-  text
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-");
-
-async function getCachedCatalog() {
-  const now = Date.now();
-  if (cachedCatalog && (now - cachedCatalogTimestamp) < CACHE_TTL) {
-    return cachedCatalog;
-  }
-
-  const data = await fetchFullCatalogRaw();
-  cachedCatalog = data;
-  cachedCatalogTimestamp = now;
-  return data;
+/**
+ * Server-side catalog fetcher with zero stale caching.
+ * Resolves directly from Firestore Master Catalog on every request.
+ */
+export async function fetchFullCatalog() {
+  return await fetchFullCatalogFromFirestore();
 }
 
-export const fetchFullCatalog = cache(async () => {
-  return await getCachedCatalog();
-});
-
-export const fetchDistricts = cache(async () => {
-  const now = Date.now();
-  if (cachedDistricts && (now - cachedDistrictsTimestamp) < CACHE_TTL) {
-    return cachedDistricts;
-  }
-
+/**
+ * Fetch districts for the website
+ */
+export async function fetchDistricts() {
+  const { normalizedWebsiteId } = getCompanyAndWebsiteConfig();
   try {
     const snap = await getDocs(
-      collection(db, "websites", "globalbiomedicalsnet", "districts")
+      collection(db, "websites", normalizedWebsiteId, "districts")
     );
     const districts = snap.docs.map((docSnap) => {
       const d = docSnap.data();
       const slug = d.slug || docSnap.id;
-      const districtName = d.district || slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+      const districtName =
+        d.district || slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
       return {
         id: docSnap.id,
         slug,
@@ -58,25 +37,27 @@ export const fetchDistricts = cache(async () => {
       };
     });
 
-    cachedDistricts = districts;
-    cachedDistrictsTimestamp = now;
-    return districts;
+    if (districts.length > 0) return districts;
   } catch (err) {
     console.error("Error fetching districts server side:", err);
-    return [
-      { id: "jaipur", slug: "jaipur", district: "Jaipur", state: "Rajasthan" },
-      { id: "jodhpur", slug: "jodhpur", district: "Jodhpur", state: "Rajasthan" },
-      { id: "udaipur", slug: "udaipur", district: "Udaipur", state: "Rajasthan" },
-      { id: "kota", slug: "kota", district: "Kota", state: "Rajasthan" },
-      { id: "ajmer", slug: "ajmer", district: "Ajmer", state: "Rajasthan text" },
-      { id: "bikaner", slug: "bikaner", district: "Bikaner", state: "Rajasthan" },
-      { id: "alwar", slug: "alwar", district: "Alwar", state: "Rajasthan" },
-      { id: "bhilwara", slug: "bhilwara", district: "Bhilwara", state: "Rajasthan" },
-    ];
   }
-});
 
-export const fetchCategoriesSummary = cache(async () => {
+  return [
+    { id: "jaipur", slug: "jaipur", district: "Jaipur", state: "Rajasthan" },
+    { id: "jodhpur", slug: "jodhpur", district: "Jodhpur", state: "Rajasthan" },
+    { id: "udaipur", slug: "udaipur", district: "Udaipur", state: "Rajasthan" },
+    { id: "kota", slug: "kota", district: "Kota", state: "Rajasthan" },
+    { id: "ajmer", slug: "ajmer", district: "Ajmer", state: "Rajasthan" },
+    { id: "bikaner", slug: "bikaner", district: "Bikaner", state: "Rajasthan" },
+    { id: "alwar", slug: "alwar", district: "Alwar", state: "Rajasthan" },
+    { id: "bhilwara", slug: "bhilwara", district: "Bhilwara", state: "Rajasthan" },
+  ];
+}
+
+/**
+ * Summarizes categories and their subcategories from visible Master Catalog items.
+ */
+export async function fetchCategoriesSummary() {
   const catalog = await fetchFullCatalog();
   const catMap = {};
 
@@ -102,9 +83,12 @@ export const fetchCategoriesSummary = cache(async () => {
     ...cat,
     subcategories: Array.from(cat.subcategories),
   }));
-});
+}
 
-export const fetchBrandsSummary = cache(async () => {
+/**
+ * Summarizes brands from visible Master Catalog items.
+ */
+export async function fetchBrandsSummary() {
   const catalog = await fetchFullCatalog();
   const brandMap = {};
 
@@ -124,25 +108,38 @@ export const fetchBrandsSummary = cache(async () => {
   });
 
   return Object.values(brandMap);
-});
+}
 
-export const fetchProductsByCategorySlug = cache(async (categorySlug) => {
+/**
+ * Fetch visible products under a category slug.
+ */
+export async function fetchProductsByCategorySlug(categorySlug) {
   const catalog = await fetchFullCatalog();
   return catalog.filter((item) => {
     const catSlug = makeSlug(item.category || "Other Products");
     return catSlug === categorySlug;
   });
-});
+}
 
-export const fetchProductsByBrandSlug = cache(async (brandSlug) => {
+/**
+ * Fetch visible products under a brand slug.
+ */
+export async function fetchProductsByBrandSlug(brandSlug) {
   const catalog = await fetchFullCatalog();
   return catalog.filter((item) => {
     if (!item.brand) return false;
     return makeSlug(item.brand) === brandSlug;
   });
-});
+}
 
-export const fetchProductBySlug = cache(async (slug) => {
+/**
+ * Fetch a single product by slug from the visible master catalog.
+ */
+export async function fetchProductBySlug(slug) {
   const catalog = await fetchFullCatalog();
-  return catalog.find((item) => item.slug === slug || makeSlug(item.title) === slug) || null;
-});
+  return (
+    catalog.find(
+      (item) => item.slug === slug || makeSlug(item.title || item.name) === slug
+    ) || null
+  );
+}

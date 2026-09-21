@@ -13,11 +13,11 @@ import {
   ChevronUp,
   Download,
   FileText,
+  RefreshCw,
 } from "lucide-react";
 import { Toaster, toast } from "react-hot-toast";
 import PageBanner from "@/components/PageBanner";
 import SectionTitle from "@/components/SectionTitle";
-// import CTASection from "@/components/CTASection";
 import ProductCard from "@/components/ProductCard";
 
 // 1. Memoized Product Link Component
@@ -27,7 +27,7 @@ const ProductLink = memo(function ProductLink({ item, category, scrollToProduct 
       onClick={() => scrollToProduct(item.slug, category)}
       className="block w-full text-left py-1 text-sm text-slate-500 hover:text-[#8B5A2B] hover:translate-x-1 transition-all duration-200 font-medium"
     >
-      • {item.title}
+      • {item.title || item.name}
     </button>
   );
 });
@@ -54,23 +54,22 @@ const SubCategoryItem = memo(function SubCategoryItem({
           </span>
           {subCategory}
         </span>
-        <span className="text-[10px] font-semibold bg-bg-[#F5EBDD] text-[#8B5A2B] px-1.5 py-0.5 rounded-full">
+        <span className="text-[10px] font-semibold bg-[#F5EBDD] text-[#8B5A2B] px-1.5 py-0.5 rounded-full">
           {subList.length}
         </span>
       </button>
 
       {/* Product List Wrapper */}
       <div
-        className={`transition-all duration-300 ease-in-out pl-3 overflow-hidden ${isSubOpened
-          ? "max-h-48 opacity-100 mt-1 mb-2"
-          : "max-h-0 opacity-0"
-          }`}
+        className={`transition-all duration-300 ease-in-out pl-3 overflow-hidden ${
+          isSubOpened ? "max-h-48 opacity-100 mt-1 mb-2" : "max-h-0 opacity-0"
+        }`}
       >
         {isSubOpened && (
           <div className="max-h-40 overflow-y-auto custom-scrollbar space-y-1.5 pr-1">
             {subList.map((item) => (
               <ProductLink
-                key={item.uid}
+                key={item.uid || item.id}
                 item={item}
                 category={category}
                 scrollToProduct={scrollToProduct}
@@ -99,29 +98,35 @@ const CategoryItem = memo(function CategoryItem({
     <div className="group">
       <button
         onClick={() => toggleCategory(category)}
-        className={`sticky top-[116px] z-10 w-full px-4 py-3 flex justify-between items-center rounded-2xl transition-all duration-200 text-left ${isActive
-          ? "bg-bg-[#F5EBDD] text-[#8B5A2B] font-bold"
-          : "bg-white text-slate-700 hover:bg-slate-50 hover:text-[#8B5A2B]"
-          }`}
+        className={`sticky top-[116px] z-10 w-full px-4 py-3 flex justify-between items-center rounded-2xl transition-all duration-200 text-left ${
+          isActive
+            ? "bg-[#F5EBDD] text-[#8B5A2B] font-bold"
+            : "bg-white text-slate-700 hover:bg-slate-50 hover:text-[#8B5A2B]"
+        }`}
       >
         <span className="flex items-center gap-3 text-sm font-semibold leading-none">
           <span className={`transition-transform duration-200 ${isOpened ? "rotate-90" : ""}`}>
-            <ChevronRight size={16} className={isActive ? "text-[#8B5A2B]" : "text-slate-400 group-hover:text-[#8B5A2B]"} />
+            <ChevronRight
+              size={16}
+              className={isActive ? "text-[#8B5A2B]" : "text-slate-400 group-hover:text-[#8B5A2B]"}
+            />
           </span>
           {category}
         </span>
-        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${isActive ? "bg-bg-[#F5EBDD] text-[#A06A3B]" : "bg-slate-100 text-slate-500"
-          }`}>
+        <span
+          className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+            isActive ? "bg-[#F5EBDD] text-[#A06A3B]" : "bg-slate-100 text-slate-500"
+          }`}
+        >
           {categoryProductCount}
         </span>
       </button>
 
       {/* Subcategories Wrapper */}
       <div
-        className={`transition-all duration-300 ease-in-out pl-4 overflow-hidden ${isOpened
-          ? "max-h-[1000px] opacity-100 mt-2 mb-4"
-          : "max-h-0 opacity-0"
-          }`}
+        className={`transition-all duration-300 ease-in-out pl-4 overflow-hidden ${
+          isOpened ? "max-h-[1000px] opacity-100 mt-2 mb-4" : "max-h-0 opacity-0"
+        }`}
       >
         {isOpened && (
           <div className="space-y-3 pt-1">
@@ -149,6 +154,7 @@ const CategoryItem = memo(function CategoryItem({
 });
 
 export default function ProductsClient({ initialProducts = [], district = null, city = null }) {
+  const [productsList, setProductsList] = useState(initialProducts);
   const [categorySearch, setCategorySearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [productSearch, setProductSearch] = useState("");
@@ -157,8 +163,67 @@ export default function ProductsClient({ initialProducts = [], district = null, 
   const [openedSubCategories, setOpenedSubCategories] = useState({});
   const [pendingScroll, setPendingScroll] = useState(null);
   const [showTopButton, setShowTopButton] = useState(false);
+  const [isLiveSyncing, setIsLiveSyncing] = useState(false);
 
-  // Debounce search term updates to make search typing instant
+  // Sync state if initialProducts prop changes
+  useEffect(() => {
+    if (Array.isArray(initialProducts)) {
+      setProductsList(initialProducts);
+    }
+  }, [initialProducts]);
+
+  // Real-time Master Catalog Live Sync (3-second poll + Window Focus Sync)
+  useEffect(() => {
+    let isMounted = true;
+
+    const syncCatalog = async () => {
+      try {
+        const res = await fetch("/api/catalog?t=" + Date.now(), {
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            Pragma: "no-cache",
+          },
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (isMounted && data.success && Array.isArray(data.products)) {
+            setProductsList((prev) => {
+              // Deep compare length and uids to prevent redundant re-renders
+              if (
+                prev.length === data.products.length &&
+                prev.every((p, idx) => p.uid === data.products[idx]?.uid && p.title === data.products[idx]?.title)
+              ) {
+                return prev;
+              }
+              return data.products;
+            });
+          }
+        }
+      } catch (err) {
+        // Silently catch background poll errors
+      }
+    };
+
+    const handleFocus = () => {
+      syncCatalog();
+    };
+
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleFocus);
+
+    const interval = setInterval(syncCatalog, 3000);
+
+    return () => {
+      isMounted = false;
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleFocus);
+      clearInterval(interval);
+    };
+  }, []);
+
+  // Debounce search term updates
   useEffect(() => {
     const timer = setTimeout(() => {
       setProductSearch(searchInput);
@@ -166,27 +231,26 @@ export default function ProductsClient({ initialProducts = [], district = null, 
     return () => clearTimeout(timer);
   }, [searchInput]);
 
-  // Combined single-pass product filtering, grouping, category count, and sorting for maximum performance
+  // Combined single-pass product filtering, grouping, category count, and sorting
   const { filteredProducts, sortedGroupedProducts, categoryCounts } = useMemo(() => {
-    const start = performance.now();
     const query = productSearch.trim().toLowerCase();
     const filtered = query
-      ? initialProducts.filter((item) => {
-        const title = (item.title || "").toLowerCase();
-        const brand = (item.brand || "").toLowerCase();
-        const model = (item.model || "").toLowerCase();
-        const category = (item.category || "").toLowerCase();
-        const subCategory = (item.subCategory || "").toLowerCase();
+      ? productsList.filter((item) => {
+          const title = (item.title || item.name || "").toLowerCase();
+          const brand = (item.brand || "").toLowerCase();
+          const model = (item.model || "").toLowerCase();
+          const category = (item.category || "").toLowerCase();
+          const subCategory = (item.subCategory || "").toLowerCase();
 
-        return (
-          title.includes(query) ||
-          brand.includes(query) ||
-          model.includes(query) ||
-          category.includes(query) ||
-          subCategory.includes(query)
-        );
-      })
-      : initialProducts;
+          return (
+            title.includes(query) ||
+            brand.includes(query) ||
+            model.includes(query) ||
+            category.includes(query) ||
+            subCategory.includes(query)
+          );
+        })
+      : productsList;
 
     const grouped = {};
     const counts = {};
@@ -225,19 +289,19 @@ export default function ProductsClient({ initialProducts = [], district = null, 
       sortedObj[cat] = Object.fromEntries(subEntries);
     }
 
-    const end = performance.now();
-    console.log(`[ProductsClient] Grouping, filtering, and sorting completed in ${(end - start).toFixed(2)}ms`);
-
     return {
       filteredProducts: filtered,
       sortedGroupedProducts: sortedObj,
       categoryCounts: counts,
     };
-  }, [initialProducts, productSearch]);
+  }, [productsList, productSearch]);
 
-  const getCategoryProductCount = useCallback((categoryName) => {
-    return categoryCounts[categoryName] || 0;
-  }, [categoryCounts]);
+  const getCategoryProductCount = useCallback(
+    (categoryName) => {
+      return categoryCounts[categoryName] || 0;
+    },
+    [categoryCounts]
+  );
 
   const toggleCategory = useCallback((category) => {
     setOpenedCategory((prev) => (prev === category ? "" : category));
@@ -251,21 +315,23 @@ export default function ProductsClient({ initialProducts = [], district = null, 
     }));
   }, []);
 
-  const scrollToProduct = useCallback((slug, category) => {
-    setOpenedCategory(category);
-    setActiveCategory(category);
-    setPendingScroll(slug);
+  const scrollToProduct = useCallback(
+    (slug, category) => {
+      setOpenedCategory(category);
+      setActiveCategory(category);
+      setPendingScroll(slug);
 
-    // Auto-expand the target subcategory when scrolling to its product
-    const prod = initialProducts.find((p) => p.slug === slug);
-    if (prod && prod.subCategory) {
-      const subKey = `${category}-${prod.subCategory}`;
-      setOpenedSubCategories((prev) => ({
-        ...prev,
-        [subKey]: true,
-      }));
-    }
-  }, [initialProducts]);
+      const prod = productsList.find((p) => p.slug === slug);
+      if (prod && prod.subCategory) {
+        const subKey = `${category}-${prod.subCategory}`;
+        setOpenedSubCategories((prev) => ({
+          ...prev,
+          [subKey]: true,
+        }));
+      }
+    },
+    [productsList]
+  );
 
   // Scroll to selected sidebar item when category expansion finishes
   useEffect(() => {
@@ -302,28 +368,8 @@ export default function ProductsClient({ initialProducts = [], district = null, 
     });
   };
 
-  // Measure hydration completion time
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.performance) {
-      const navigationStart = window.performance.timing?.navigationStart || 0;
-      if (navigationStart) {
-        const timeSinceNavigation = Date.now() - navigationStart;
-        console.log(`[ProductsClient] Hydration completed in ${timeSinceNavigation}ms since navigation start`);
-      }
-    }
-  }, []);
-
-  const onRenderCallback = (id, phase, actualDuration) => {
-    console.log(`[React Profiler] ${id} render time (${phase}): ${actualDuration.toFixed(2)}ms`);
-  };
-
   return (
-    <Profiler id="ProductsLayout" onRender={onRenderCallback}>
-      {/* Banner */}
-      <PageBanner
-        title={city ? `Our Products in ${city}` : "Our Products"}
-        subtitle="Explore advanced biomedical and diagnostic equipment designed for modern healthcare excellence."
-      />
+    <div>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -332,11 +378,11 @@ export default function ProductsClient({ initialProducts = [], district = null, 
             "@type": "MedicalEquipmentSupplier",
             name: "Global Biomedical",
             url: "https://globalbiomedicals.net",
-            areaServed: city,
-            description: `Medical laboratory and hospital equipment in ${city}`,
+            areaServed: city || "India",
+            description: `Medical laboratory and hospital equipment in ${city || "India"}`,
             address: {
               "@type": "PostalAddress",
-              addressLocality: city,
+              addressLocality: city || "Jaipur",
               addressCountry: "India",
             },
           }),
@@ -355,45 +401,18 @@ export default function ProductsClient({ initialProducts = [], district = null, 
         }}
       />
 
-      {/* Products */}
+      {/* Products Section */}
       <section className="section-padding bg-white">
         <div className="container-custom">
           <SectionTitle
-            badge="Featured Products"
+            badge="Master Catalog"
             title="Premium Biomedical Equipment"
             description="Discover high-quality diagnostic and biomedical technologies tailored for laboratories, healthcare institutions, and modern diagnostics."
             center
           />
-
-          {/* Brochure PDF Download Banner */}
-          {/* <div className="max-w-4xl mx-auto mt-8 bg-gradient-to-r from-[#6F4E37] via-[#8B5A2B] to-[#A06A3B] p-6 sm:p-8 rounded-3xl shadow-xl text-white flex flex-col sm:flex-row items-center justify-between gap-6 border border-[#E6D8C8]">
-            <div className="flex items-center gap-4">
-              <div className="p-4 rounded-2xl bg-white/10 backdrop-blur border border-white/20 shrink-0">
-                <FileText size={32} className="text-[#F8EEDF]" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-white sm:text-2xl">
-                  Global Biomedicals Catalog & Brochure
-                </h3>
-                <p className="text-sm text-[#F8EEDF] mt-1">
-                  Download our official product brochure PDF with complete specifications for CBC machines, analyzers & lab instruments.
-                </p>
-              </div>
-            </div>
-            <a
-              href="/Global-Biomedicals-Brochure.pdf"
-              download="Global-Biomedicals-Brochure.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="shrink-0 flex items-center gap-2.5 bg-white text-[#6F4E37] hover:bg-[#F8F5F0] font-bold px-6 py-3.5 rounded-2xl shadow-lg transition-all duration-300 hover:scale-105"
-            >
-              <Download size={20} className="text-[#8B5A2B]" />
-              Download Brochure PDF
-            </a>
-          </div> */}
         </div>
 
-        {/* Search */}
+        {/* Search Bar */}
         <div className="max-w-2xl mx-auto mt-6 lg:mt-10 px-4 lg:px-0 relative">
           <Search
             size={22}
@@ -402,7 +421,7 @@ export default function ProductsClient({ initialProducts = [], district = null, 
 
           <input
             type="text"
-            placeholder="Search products..."
+            placeholder="Search products by name, brand, model..."
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="w-full h-16 pl-14 pr-5 rounded-2xl border border-slate-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A06A3B]"
@@ -410,14 +429,14 @@ export default function ProductsClient({ initialProducts = [], district = null, 
         </div>
 
         {/* Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)] gap-6 lg:gap-10 mt-8 lg:mt-16 items-start px-4 lg:px-0">
-          {/* Main Sidebar (Only scrollable container for the sidebar) */}
+        <div className="grid grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)] gap-6 lg:gap-10 mt-8 lg:mt-16 items-start px-4 lg:px-0 container-custom">
+          {/* Main Sidebar */}
           <aside className="lg:sticky lg:top-24 self-start rounded-[32px] border border-slate-200 bg-white shadow-xl px-6 pb-6 pt-0 max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar relative">
             {/* Sticky Header Section */}
             <div className="sticky top-0 -mx-6 pt-6 px-6 pb-3 bg-white z-20 border-b border-slate-100 mb-4 h-[116px]">
               <h3 className="text-xl font-bold text-slate-900 mb-3 flex items-center justify-between">
                 <span>Categories</span>
-                <span className="text-xs bg-slate-100 text-slate-500 font-semibold px-2 py-0.5 rounded-full">
+                <span className="text-xs bg-[#F5EBDD] text-[#8B5A2B] font-semibold px-2 py-0.5 rounded-full">
                   {Object.keys(sortedGroupedProducts).length}
                 </span>
               </h3>
@@ -439,63 +458,77 @@ export default function ProductsClient({ initialProducts = [], district = null, 
             </div>
 
             <div className="space-y-1.5">
-              {Object.keys(sortedGroupedProducts)
-                .filter((category) =>
-                  category.toLowerCase().includes(categorySearch.toLowerCase())
-                )
-                .map((category) => {
-                  const isOpened = openedCategory === category;
-                  const isActive = activeCategory === category;
-                  const subcategories = sortedGroupedProducts[category] || {};
-                  const count = getCategoryProductCount(category);
+              {Object.keys(sortedGroupedProducts).length === 0 ? (
+                <div className="text-center py-6 text-slate-400 text-xs font-medium">
+                  No active categories
+                </div>
+              ) : (
+                Object.keys(sortedGroupedProducts)
+                  .filter((category) =>
+                    category.toLowerCase().includes(categorySearch.toLowerCase())
+                  )
+                  .map((category) => {
+                    const isOpened = openedCategory === category;
+                    const isActive = activeCategory === category;
+                    const subcategories = sortedGroupedProducts[category] || {};
+                    const count = getCategoryProductCount(category);
 
-                  return (
-                    <CategoryItem
-                      key={category}
-                      category={category}
-                      isOpened={isOpened}
-                      isActive={isActive}
-                      subcategories={subcategories}
-                      categoryProductCount={count}
-                      toggleCategory={toggleCategory}
-                      toggleSubCategory={toggleSubCategory}
-                      openedSubCategories={openedSubCategories}
-                      scrollToProduct={scrollToProduct}
-                    />
-                  );
-                })}
+                    return (
+                      <CategoryItem
+                        key={category}
+                        category={category}
+                        isOpened={isOpened}
+                        isActive={isActive}
+                        subcategories={subcategories}
+                        categoryProductCount={count}
+                        toggleCategory={toggleCategory}
+                        toggleSubCategory={toggleSubCategory}
+                        openedSubCategories={openedSubCategories}
+                        scrollToProduct={scrollToProduct}
+                      />
+                    );
+                  })
+              )}
             </div>
           </aside>
 
-          {/* RIGHT SIDE START */}
+          {/* RIGHT SIDE: Products Grid */}
           <div className="space-y-16">
             {filteredProducts.length === 0 ? (
               <div className="bg-white border border-slate-200 rounded-[32px] p-10 lg:p-16 text-center shadow-lg">
-                <div className="w-24 h-24 mx-auto rounded-full bg-bg-[#F5EBDD] flex items-center justify-center text-5xl mb-6">
-                  🔍
+                <div className="w-24 h-24 mx-auto rounded-full bg-[#F5EBDD] flex items-center justify-center text-5xl mb-6">
+                  {productSearch ? "🔍" : "📦"}
                 </div>
 
                 <h2 className="text-2xl lg:text-4xl font-bold text-slate-900">
-                  Product Not Found
+                  {productSearch ? "Product Not Found" : "No Products Available"}
                 </h2>
 
                 <p className="mt-4 text-slate-500 max-w-xl mx-auto leading-7">
-                  {"We couldn't find any products matching"}
-                  <span className="font-semibold text-[#8B5A2B]">
-                    {" \"" + productSearch + "\" "}
-                  </span>
-                  . Please try another keyword or browse categories.
+                  {productSearch ? (
+                    <>
+                      {"We couldn't find any products matching "}
+                      <span className="font-semibold text-[#8B5A2B]">
+                        {'"' + productSearch + '"'}
+                      </span>
+                      . Please try another keyword or browse categories.
+                    </>
+                  ) : (
+                    "Products for this catalog are currently being updated from the master admin. Please check back shortly."
+                  )}
                 </p>
 
-                <button
-                  onClick={() => {
-                    setSearchInput("");
-                    setProductSearch("");
-                  }}
-                  className="mt-8 px-8 py-3 rounded-xl bg-gradient-to-r from-[#6F4E37] to-[#A06A3B] text-white font-semibold hover:from-[#5E4230] hover:to-[#8B5A2B] transition"
-                >
-                  View All Products
-                </button>
+                {productSearch && (
+                  <button
+                    onClick={() => {
+                      setSearchInput("");
+                      setProductSearch("");
+                    }}
+                    className="mt-8 px-8 py-3 rounded-xl bg-gradient-to-r from-[#6F4E37] to-[#A06A3B] text-white font-semibold hover:from-[#5E4230] hover:to-[#8B5A2B] transition"
+                  >
+                    View All Products
+                  </button>
+                )}
               </div>
             ) : (
               Object.entries(sortedGroupedProducts).map(
@@ -536,9 +569,9 @@ export default function ProductsClient({ initialProducts = [], district = null, 
 
                             {/* Product List */}
                             <div className="space-y-8">
-                              {list.slice(0, 12).map((product) => (
+                              {list.map((product) => (
                                 <ProductCard
-                                  key={product.uid}
+                                  key={product.uid || product.id}
                                   product={product}
                                   district={district}
                                 />
@@ -589,7 +622,7 @@ export default function ProductsClient({ initialProducts = [], district = null, 
                 key={index}
                 className="bg-white rounded-[30px] border border-slate-100 card-shadow text-center p-8"
               >
-                <div className="w-16 h-16 mx-auto rounded-[22px] bg-bg-[#F5EBDD] text-[#8B5A2B] flex items-center justify-center mb-6">
+                <div className="w-16 h-16 mx-auto rounded-[22px] bg-[#F5EBDD] text-[#8B5A2B] flex items-center justify-center mb-6">
                   {item.icon}
                 </div>
 
@@ -600,9 +633,6 @@ export default function ProductsClient({ initialProducts = [], district = null, 
         </div>
       </section>
 
-      {/* CTA */}
-      {/* <CTASection /> */}
-
       {/* Back To Top */}
       {showTopButton && (
         <button
@@ -612,6 +642,6 @@ export default function ProductsClient({ initialProducts = [], district = null, 
           <ChevronUp size={24} />
         </button>
       )}
-    </Profiler>
+    </div>
   );
 }

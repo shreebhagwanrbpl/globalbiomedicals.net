@@ -16,6 +16,7 @@ import {
   Download,
   Sparkles,
 } from "lucide-react";
+import { getCompanyAndWebsiteConfig } from "@/lib/companyConfig";
 import { FaInstagram, FaFacebook } from "react-icons/fa";
 
 export default function HeroSection({ city }) {
@@ -31,8 +32,9 @@ export default function HeroSection({ city }) {
   useEffect(() => {
     const fetchHeroData = async () => {
       try {
+        const { normalizedWebsiteId } = getCompanyAndWebsiteConfig();
         const snap = await getDoc(
-          doc(db, "websites", "globalbiomedicalsnet", "pages", "home")
+          doc(db, "websites", normalizedWebsiteId, "pages", "home")
         );
 
         if (snap.exists()) {

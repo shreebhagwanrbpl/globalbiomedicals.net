@@ -2,6 +2,9 @@ import ProductDetails from "../../../items/[slug]/ProductDetails";
 import { fetchProductBySlug } from "@/lib/data-fetcher-server";
 import { SITE_URL, SITE_NAME } from "@/lib/constants";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function generateMetadata({ params }) {
     const { slug, district } = await params;
     const product = await fetchProductBySlug(slug);

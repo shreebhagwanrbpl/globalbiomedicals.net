@@ -13,12 +13,8 @@ import SectionTitle from "@/components/SectionTitle";
 import CTASection from "@/components/CTASection";
 import { ShieldCheck, CheckCircle2, FileText, ArrowRight, HelpCircle } from "lucide-react";
 
-export const revalidate = 3600;
-
-export async function generateStaticParams() {
-  const categories = await fetchCategoriesSummary();
-  return categories.map((c) => ({ slug: c.slug }));
-}
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;

@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { FaInstagram, FaFacebook } from "react-icons/fa";
 
+import { getCompanyAndWebsiteConfig } from "@/lib/companyConfig";
+
 export default function Footer() {
   const [contactInfo, setContactInfo] =
     useState([]);
@@ -48,11 +50,12 @@ export default function Footer() {
   useEffect(() => {
     const loadContact = async () => {
       try {
+        const { normalizedWebsiteId } = getCompanyAndWebsiteConfig();
         const snap = await getDoc(
           doc(
             db,
             "websites",
-            "globalbiomedicalsnet",
+            normalizedWebsiteId,
             "pages",
             "contact"
           )
@@ -79,11 +82,12 @@ export default function Footer() {
       if (!district) return;
 
       try {
+        const { normalizedWebsiteId } = getCompanyAndWebsiteConfig();
         const snap = await getDoc(
           doc(
             db,
             "websites",
-            "globalbiomedicalsnet",
+            normalizedWebsiteId,
             "districts",
             district
           )

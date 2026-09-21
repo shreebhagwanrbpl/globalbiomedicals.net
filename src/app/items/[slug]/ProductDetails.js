@@ -420,7 +420,7 @@ ${product?.desc}
                                     )}
 
                                     <Image
-                                        src={selectedImage || product.image}
+                                        src={selectedImage || product.image || "/global-logo.png"}
                                         alt={product.title}
                                         fill
                                         priority
@@ -441,7 +441,7 @@ ${product?.desc}
                             {(product.images?.length
                                 ? product.images
                                 : [product.image]
-                            ).map((img, index) => (
+                            ).filter(Boolean).map((img, index) => (
 
                                 <button
                                     key={index}
@@ -717,69 +717,7 @@ ${product?.desc}
                                     "No description available."}
                             </p>
 
-                            {/* Specifications Table */}
 
-                            <div className="mt-10 overflow-x-auto">
-                                <table className="w-full border border-slate-200">
-                                    <tbody>
-
-                                        <tr>
-                                            <td className="border p-3 font-semibold">
-                                                Brand
-                                            </td>
-                                            <td className="border p-3">
-                                                {product.brand || "N/A"}
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td className="border p-3 font-semibold">
-                                                Model
-                                            </td>
-                                            <td className="border p-3">
-                                                {product.model || "N/A"}
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td className="border p-3 font-semibold">
-                                                Usage
-                                            </td>
-                                            <td className="border p-3">
-                                                {product.usage || "N/A"}
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td className="border p-3 font-semibold">
-                                                Automation
-                                            </td>
-                                            <td className="border p-3">
-                                                {product.automation || "N/A"}
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td className="border p-3 font-semibold">
-                                                Capacity
-                                            </td>
-                                            <td className="border p-3">
-                                                {product.capacity || "N/A"}
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td className="border p-3 font-semibold">
-                                                Throughput
-                                            </td>
-                                            <td className="border p-3">
-                                                {product.throughput || "N/A"}
-                                            </td>
-                                        </tr>
-
-                                    </tbody>
-                                </table>
-                            </div>
 
                             {/* SEO Content */}
 
