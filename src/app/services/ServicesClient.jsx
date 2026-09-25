@@ -20,8 +20,7 @@ import PageBanner from "@/components/PageBanner";
 import SectionTitle from "@/components/SectionTitle";
 import CTASection from "@/components/CTASection";
 import { servicesData, serviceCategories } from "@/data/servicesData";
-import { doc, getDoc, addDoc, collection } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { fetchServicesData } from "@/lib/data-fetcher";
 import toast from "react-hot-toast";
 
 export default function ServicesClient() {
@@ -56,19 +55,11 @@ export default function ServicesClient() {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const snap = await getDoc(
-          doc(
-            db,
-            "websites",
-            "globalbiomedicalsnet",
-            "pages",
-            "services"
-          )
-        );
+        const snap = await fetchServicesData();
 
-        if (snap.exists() && snap.data().services?.length > 0) {
-          const fbServices = snap.data().services.map((s, idx) => ({
-            id: `fb-${idx}`,
+        if (snap && snap.services?.length > 0) {
+          const adminServices = snap.services.map((s, idx) => ({
+            id: `admin-${idx}`,
             title: s.title || "Biomedical Service",
             category: s.category || (idx % 2 === 0 ? "Maintenance" : "Sales & Supply"),
             desc: s.desc || s.description || "Trusted biomedical solution for diagnostic laboratories.",
@@ -77,10 +68,10 @@ export default function ServicesClient() {
             badge: s.badge || "Certified",
             icon: s.icon || (idx === 0 ? "Microscope" : idx === 1 ? "Wrench" : "ShieldCheck")
           }));
-          setServices(fbServices);
+          setServices(adminServices);
         }
       } catch (error) {
-        console.error("Firebase fetch failed, using fallback data:", error);
+        console.error("Services fetch failed:", error);
       } finally {
         setLoading(false);
       }
@@ -106,15 +97,23 @@ export default function ServicesClient() {
 
     try {
       setInquirySubmitting(true);
-      await addDoc(
-        collection(db, "websitesQueries", "globalbiomedicalsnet", "serviceInquiries"),
-        {
+      const res = await fetch("/api/contact-query", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...inquiryForm,
+          type: "service",
           serviceTitle: selectedService?.title || "General Service Request",
           serviceCategory: selectedService?.category || "Service Inquiry",
-          ...inquiryForm,
-          createdAt: new Date()
-        }
-      );
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Failed to submit service inquiry");
+      }
 
       toast.success("Service inquiry submitted! Our engineer will call you shortly.");
       setModalOpen(false);

@@ -15,13 +15,6 @@ import {
     FaLink,
 } from "react-icons/fa";
 
-import {
-    doc,
-    getDoc,
-    getDocs,
-    addDoc,
-    collection,
-} from "firebase/firestore";
 import { fetchFullCatalog } from "@/lib/data-fetcher";
 import { generateProductPDF } from "@/lib/pdfBrochureGenerator";
 const makeSlug = (text = "") =>
@@ -116,22 +109,25 @@ export default function ProductDetails({ slug }) {
         try {
             setSubmitting(true);
 
-            await addDoc(
-                collection(
-                    db,
-                    "websitesQueries",
-                    "globalbiomedicalsnet",
-                    "productQueries"
-                ),
-                {
+            const res = await fetch("/api/product-query", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
                     ...form,
-                    productName: product.title,
-                    productSlug: product.slug,
-                    brand: product.brand || "",
-                    model: product.model || "",
-                    createdAt: new Date(),
-                }
-            );
+                    productName: product?.title || "",
+                    productSlug: product?.slug || slug || "",
+                    brand: product?.brand || "",
+                    model: product?.model || "",
+                    city: cityName,
+                }),
+            });
+
+            const data = await res.json();
+            if (!res.ok || !data.success) {
+                throw new Error(data.error || "Failed to submit enquiry");
+            }
 
             toast.success(
                 "Your enquiry has been submitted successfully."
@@ -145,7 +141,7 @@ export default function ProductDetails({ slug }) {
         } catch (error) {
             console.error(error);
             toast.error(
-                "Something went wrong"
+                "Something went wrong. Please try again."
             );
         } finally {
             setSubmitting(false);

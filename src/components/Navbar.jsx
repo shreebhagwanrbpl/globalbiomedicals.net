@@ -75,7 +75,7 @@ export default function Navbar() {
 
           {/* Social Links */}
           <div className="flex items-center gap-4">
-            <span className="text-[#A08875]">Follow Us:</span>
+            <span className="text-[#E6D8C8]">Follow Us:</span>
             <a
               href="https://www.instagram.com/globalbiomedicals/"
               target="_blank"
@@ -278,4 +278,4 @@ export default function Navbar() {
 
     </header>
   );
-}
+}

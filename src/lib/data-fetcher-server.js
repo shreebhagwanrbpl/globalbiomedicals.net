@@ -1,57 +1,34 @@
-import { fetchFullCatalogFromFirestore, makeSlug } from "./data-fetcher.js";
-import { db } from "./firebase.js";
-import { collection, getDocs } from "firebase/firestore";
-import { getCompanyAndWebsiteConfig } from "./companyConfig.js";
+import {
+  fetchAdminCatalog,
+  fetchAdminDistricts,
+  fetchAdminDistrict,
+} from "./admin-api.js";
+import { makeSlug } from "./data-fetcher.js";
 
 export { makeSlug };
 
 /**
  * Server-side catalog fetcher with zero stale caching.
- * Resolves directly from Firestore Master Catalog on every request.
+ * Resolves directly from SQLite Admin API on every request.
  */
-export async function fetchFullCatalog() {
-  return await fetchFullCatalogFromFirestore();
+export async function fetchFullCatalog(options = {}) {
+  return await fetchAdminCatalog(options);
 }
 
 /**
- * Fetch districts for the website
+ * Fetch districts for the website from SQLite Admin API
+ * NO hardcoded fallback array.
  */
 export async function fetchDistricts() {
-  const { normalizedWebsiteId } = getCompanyAndWebsiteConfig();
-  try {
-    const snap = await getDocs(
-      collection(db, "websites", normalizedWebsiteId, "districts")
-    );
-    const districts = snap.docs.map((docSnap) => {
-      const d = docSnap.data();
-      const slug = d.slug || docSnap.id;
-      const districtName =
-        d.district || slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-      return {
-        id: docSnap.id,
-        slug,
-        district: districtName,
-        state: d.state || "Rajasthan",
-        nearby: d.nearby || [],
-        description: d.description || "",
-      };
-    });
+  return await fetchAdminDistricts();
+}
 
-    if (districts.length > 0) return districts;
-  } catch (err) {
-    console.error("Error fetching districts server side:", err);
-  }
-
-  return [
-    { id: "jaipur", slug: "jaipur", district: "Jaipur", state: "Rajasthan" },
-    { id: "jodhpur", slug: "jodhpur", district: "Jodhpur", state: "Rajasthan" },
-    { id: "udaipur", slug: "udaipur", district: "Udaipur", state: "Rajasthan" },
-    { id: "kota", slug: "kota", district: "Kota", state: "Rajasthan" },
-    { id: "ajmer", slug: "ajmer", district: "Ajmer", state: "Rajasthan" },
-    { id: "bikaner", slug: "bikaner", district: "Bikaner", state: "Rajasthan" },
-    { id: "alwar", slug: "alwar", district: "Alwar", state: "Rajasthan" },
-    { id: "bhilwara", slug: "bhilwara", district: "Bhilwara", state: "Rajasthan" },
-  ];
+/**
+ * Fetch single district data
+ */
+export async function fetchDistrictData(districtSlug) {
+  if (!districtSlug) return null;
+  return await fetchAdminDistrict(districtSlug);
 }
 
 /**

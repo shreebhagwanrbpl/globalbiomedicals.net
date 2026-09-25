@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { fetchFullCatalogFromFirestore } from "@/lib/data-fetcher";
+import { fetchAdminCatalog } from "@/lib/admin-api";
 import { getCompanyAndWebsiteConfig } from "@/lib/companyConfig";
 
 export const dynamic = "force-dynamic";
@@ -9,7 +9,10 @@ export const fetchCache = "force-no-store";
 export async function GET(request) {
   try {
     const config = getCompanyAndWebsiteConfig();
-    const products = await fetchFullCatalogFromFirestore();
+    const products = await fetchAdminCatalog({
+      companyId: config.companyId,
+      websiteId: config.normalizedWebsiteId,
+    });
 
     return NextResponse.json(
       {
@@ -23,7 +26,8 @@ export async function GET(request) {
       {
         status: 200,
         headers: {
-          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0",
+          "Cache-Control":
+            "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0",
           "Surrogate-Control": "no-store",
           Pragma: "no-cache",
           Expires: "0",

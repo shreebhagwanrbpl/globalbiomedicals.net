@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { fetchHomeData } from "@/lib/data-fetcher";
 
 import {
   ArrowRight,
@@ -13,10 +12,8 @@ import {
   Activity,
   HeartPulse,
   PhoneCall,
-  Download,
   Sparkles,
 } from "lucide-react";
-import { getCompanyAndWebsiteConfig } from "@/lib/companyConfig";
 import { FaInstagram, FaFacebook } from "react-icons/fa";
 
 export default function HeroSection({ city }) {
@@ -30,15 +27,11 @@ export default function HeroSection({ city }) {
   });
 
   useEffect(() => {
-    const fetchHeroData = async () => {
+    const loadHeroData = async () => {
       try {
-        const { normalizedWebsiteId } = getCompanyAndWebsiteConfig();
-        const snap = await getDoc(
-          doc(db, "websites", normalizedWebsiteId, "pages", "home")
-        );
-
-        if (snap.exists()) {
-          setHeroData(snap.data());
+        const homeData = await fetchHomeData();
+        if (homeData) {
+          setHeroData(homeData);
         }
       } catch (error) {
         console.error("Error fetching hero data:", error);
@@ -47,7 +40,7 @@ export default function HeroSection({ city }) {
       }
     };
 
-    fetchHeroData();
+    loadHeroData();
   }, []);
 
   // District Routing
@@ -61,26 +54,45 @@ export default function HeroSection({ city }) {
 
   const capabilities = [
     {
-      icon: <Activity className="text-[#8B5A2B]" size={24} />,
+      icon: <Activity size={24} />,
       title: "Lab & Testing Equipment",
       desc: "Modern CBC, Biochemistry & Hematology Machines",
     },
     {
-      icon: <Microscope className="text-[#8B5A2B]" size={24} />,
+      icon: <Microscope size={24} />,
       title: "Essential Reagents",
       desc: "Fresh, Certified Reagents with Safe Temperature Delivery",
     },
     {
-      icon: <ShieldCheck className="text-[#8B5A2B]" size={24} />,
+      icon: <ShieldCheck size={24} />,
       title: "Setup & Calibration",
       desc: "Complete On-Site Assembly, Testing & Staff Training",
     },
     {
-      icon: <HeartPulse className="text-[#8B5A2B]" size={24} />,
+      icon: <HeartPulse size={24} />,
       title: "24/7 Rapid Assistance",
       desc: "Quick Repairs and Maintenance for Hospitals & Labs",
     },
   ];
+
+  const titleText =
+    heroData?.title || heroData?.headline || heroData?.heading || "";
+  const descText =
+    heroData?.description || heroData?.desc || heroData?.subheading || "";
+  const btn1Text =
+    heroData?.button1Text ||
+    heroData?.buttonText ||
+    heroData?.btn1Text ||
+    heroData?.btnText ||
+    heroData?.btn1 ||
+    heroData?.button1 ||
+    "";
+  const btn2Text =
+    heroData?.button2Text ||
+    heroData?.btn2Text ||
+    heroData?.btn2 ||
+    heroData?.button2 ||
+    "";
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-[#FFFDF9] via-[#FDFBF7] to-[#F8F5F0] py-16 lg:py-24">
@@ -113,8 +125,7 @@ export default function HeroSection({ city }) {
               </div>
             ) : (
               <>
-                {heroData.title || "Reliable Medical Equipment & Lab Solutions"}
-
+                {titleText}
                 {city ? (
                   <>
                     <br />
@@ -122,11 +133,7 @@ export default function HeroSection({ city }) {
                       in {city}
                     </span>
                   </>
-                ) : (
-                  <span className="block mt-2 bg-gradient-to-r from-[#6F4E37] via-[#8B5A2B] to-[#C49A6C] bg-clip-text text-transparent">
-                    Built for Modern Hospitals & Labs
-                  </span>
-                )}
+                ) : null}
               </>
             )}
           </h1>
@@ -137,11 +144,9 @@ export default function HeroSection({ city }) {
               <div className="h-4 rounded bg-[#ECE4DA] w-full" />
               <div className="h-4 rounded bg-[#ECE4DA] w-[90%]" />
             </div>
-          ) : (
+          ) : descText ? (
             <p className="mt-6 max-w-2xl text-base sm:text-lg lg:text-xl leading-relaxed text-[#5E5146]">
-              {heroData.description ||
-                "We supply high-quality laboratory machines, diagnostic tools, and fast technical support so your medical facility runs smoothly every single day."}
-
+              {descText}
               {city && (
                 <>
                   {" "}
@@ -149,7 +154,7 @@ export default function HeroSection({ city }) {
                 </>
               )}
             </p>
-          )}
+          ) : null}
 
           {/* Quick Call Hotlines */}
           <div className="mt-6 flex flex-wrap items-center gap-3 text-xs sm:text-sm font-semibold text-[#6F4E37]">
@@ -162,37 +167,42 @@ export default function HeroSection({ city }) {
           </div>
 
           {/* Action Buttons */}
-          <div className="mt-8 flex flex-wrap items-center gap-4">
-            {loading ? (
-              <>
-                <div className="h-14 w-48 animate-pulse rounded-2xl bg-[#ECE4DA]" />
-                <div className="h-14 w-40 animate-pulse rounded-2xl bg-[#ECE4DA]" />
-              </>
-            ) : (
-              <>
-                <Link href={makeLink("/items")}>
-                  <button className="group inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-[#6F4E37] via-[#8B5A2B] to-[#A06A3B] px-7 py-4 font-semibold text-white shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-                    Explore Products
-                    <ArrowRight
-                      size={18}
-                      className="transition-transform duration-300 group-hover:translate-x-1"
-                    />
-                  </button>
-                </Link>
+          {(btn1Text || btn2Text || loading) && (
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              {loading ? (
+                <>
+                  <div className="h-14 w-48 animate-pulse rounded-2xl bg-[#ECE4DA]" />
+                  <div className="h-14 w-40 animate-pulse rounded-2xl bg-[#ECE4DA]" />
+                </>
+              ) : (
+                <>
+                  {btn1Text ? (
+                    <Link href={makeLink("/items")}>
+                      <button className="group inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-[#6F4E37] via-[#8B5A2B] to-[#A06A3B] px-7 py-4 font-semibold text-white shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                        <span>{btn1Text}</span>
+                        <ArrowRight
+                          size={18}
+                          className="transition-transform duration-300 group-hover:translate-x-1"
+                        />
+                      </button>
+                    </Link>
+                  ) : null}
 
-                <a
-                  href="/Global-Biomedicals-Brochure.pdf"
-                  download="Global-Biomedicals-Brochure.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2.5 rounded-2xl border border-[#D9C7B5] bg-white px-6 py-4 font-semibold text-[#6F4E37] shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-[#8B5A2B] hover:bg-[#F8F5F0] hover:shadow-lg"
-                >
-                  <Download size={18} className="text-[#8B5A2B]" />
-                  Download Brochure PDF
-                </a>
-              </>
-            )}
-          </div>
+                  {btn2Text ? (
+                    <Link href={makeLink("/contact")}>
+                      <button className="group inline-flex items-center justify-center gap-2.5 rounded-2xl border border-[#D9C7B5] bg-white px-6 py-4 font-semibold text-[#6F4E37] shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-[#8B5A2B] hover:bg-[#F8F5F0] hover:shadow-lg">
+                        <PhoneCall
+                          size={18}
+                          className="text-[#8B5A2B] transition-transform duration-300 group-hover:scale-110"
+                        />
+                        <span>{btn2Text}</span>
+                      </button>
+                    </Link>
+                  ) : null}
+                </>
+              )}
+            </div>
+          )}
 
           {/* Quick Stats Badges */}
           <div className="mt-12 grid grid-cols-3 gap-4 sm:gap-6 border-t border-[#E6D8C8] pt-8">
@@ -233,7 +243,7 @@ export default function HeroSection({ city }) {
           transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="relative rounded-[36px] border border-[#E6D8C8] bg-gradient-to-br from-[#FFFDF9] via-[#FDFBF7] to-[#F5ECE0] p-6 sm:p-8 shadow-2xl">
-            
+
             {/* Top Showcase Header */}
             <div className="flex items-center justify-between border-b border-[#E6D8C8] pb-5">
               <div>
@@ -252,7 +262,7 @@ export default function HeroSection({ city }) {
                   key={idx}
                   className="group rounded-2xl border border-[#E6D8C8] bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#8B5A2B] hover:shadow-md"
                 >
-                  <div className="rounded-xl bg-[#F5EBDD] p-2.5 w-fit group-hover:bg-[#6F4E37] transition-colors">
+                  <div className="rounded-xl bg-[#F5EBDD] text-[#8B5A2B] p-2.5 w-fit group-hover:bg-[#6F4E37] group-hover:text-white transition-all duration-300">
                     {item.icon}
                   </div>
                   <h4 className="mt-3 text-sm font-bold text-[#2F241E] group-hover:text-[#8B5A2B] transition-colors">
@@ -312,4 +322,4 @@ export default function HeroSection({ city }) {
       </div>
     </section>
   );
-}
+}

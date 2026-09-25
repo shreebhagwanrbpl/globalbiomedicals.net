@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -12,7 +10,7 @@ import {
 } from "lucide-react";
 import { FaInstagram, FaFacebook } from "react-icons/fa";
 
-import { getCompanyAndWebsiteConfig } from "@/lib/companyConfig";
+import { fetchContactData, fetchDistrictData } from "@/lib/data-fetcher";
 
 export default function Footer() {
   const [contactInfo, setContactInfo] =
@@ -50,26 +48,17 @@ export default function Footer() {
   useEffect(() => {
     const loadContact = async () => {
       try {
-        const { normalizedWebsiteId } = getCompanyAndWebsiteConfig();
-        const snap = await getDoc(
-          doc(
-            db,
-            "websites",
-            normalizedWebsiteId,
-            "pages",
-            "contact"
-          )
-        );
-
-        if (snap.exists()) {
+        const snap = await fetchContactData();
+        if (snap && snap.contactInfo) {
           setContactInfo(
-            snap.data().contactInfo || []
+            snap.contactInfo || []
           );
+        } else if (Array.isArray(snap)) {
+          setContactInfo(snap);
         }
-
-        setLoading(false);
       } catch (err) {
         console.log(err);
+      } finally {
         setLoading(false);
       }
     };
@@ -82,19 +71,9 @@ export default function Footer() {
       if (!district) return;
 
       try {
-        const { normalizedWebsiteId } = getCompanyAndWebsiteConfig();
-        const snap = await getDoc(
-          doc(
-            db,
-            "websites",
-            normalizedWebsiteId,
-            "districts",
-            district
-          )
-        );
-
-        if (snap.exists()) {
-          setDistrictData(snap.data());
+        const snap = await fetchDistrictData(district);
+        if (snap) {
+          setDistrictData(snap);
         }
       } catch (err) {
         console.log(err);

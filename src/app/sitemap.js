@@ -6,7 +6,9 @@ import {
 } from "@/lib/data-fetcher-server";
 import { SITE_URL } from "@/lib/constants";
 
-export const revalidate = 86400; // Revalidate sitemap daily
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
 export default async function sitemap() {
     const urls = [];
