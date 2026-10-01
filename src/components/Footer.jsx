@@ -10,11 +10,10 @@ import {
 } from "lucide-react";
 import { FaInstagram, FaFacebook } from "react-icons/fa";
 
-import { fetchContactData, fetchDistrictData } from "@/lib/data-fetcher";
+import { fetchContactData, fetchDistrictData, normalizeContactData } from "@/lib/data-fetcher";
 
 export default function Footer() {
-  const [contactInfo, setContactInfo] =
-    useState([]);
+  const [contactData, setContactData] = useState(() => normalizeContactData(null));
   const [loading, setLoading] = useState(true);
   const [districtData, setDistrictData] =
     useState(null);
@@ -39,22 +38,12 @@ export default function Footer() {
       ? pathParts[0]
       : "";
 
-  const phoneNumbers = [
-    "+91 9257984336",
-    "+91 8529833535",
-    "+91 9983301657",
-  ];
-
   useEffect(() => {
     const loadContact = async () => {
       try {
         const snap = await fetchContactData();
-        if (snap && snap.contactInfo) {
-          setContactInfo(
-            snap.contactInfo || []
-          );
-        } else if (Array.isArray(snap)) {
-          setContactInfo(snap);
+        if (snap) {
+          setContactData(normalizeContactData(snap));
         }
       } catch (err) {
         console.log(err);
@@ -83,15 +72,7 @@ export default function Footer() {
     loadDistrict();
   }, [district]);
 
-  const email =
-    contactInfo.find(
-      (x) => x.label === "Email Address"
-    )?.value || "";
-
-  const address =
-    contactInfo.find(
-      (x) => x.label === "Office Address"
-    )?.value || "";
+  const { phones: phoneNumbers, email, address } = contactData;
 
   const dynamicAddress =
     districtData

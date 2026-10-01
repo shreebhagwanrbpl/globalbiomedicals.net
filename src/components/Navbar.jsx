@@ -3,11 +3,30 @@
 import Link from "next/link";
 import { Menu, X, Phone } from "lucide-react";
 import { FaInstagram, FaFacebook } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { fetchContactData, normalizeContactData } from "@/lib/data-fetcher";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [phoneNumbers, setPhoneNumbers] = useState(() => normalizeContactData(null).phones);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchContactData()
+      .then((data) => {
+        if (isMounted && data) {
+          const norm = normalizeContactData(data);
+          if (norm.phones && norm.phones.length > 0) {
+            setPhoneNumbers(norm.phones);
+          }
+        }
+      })
+      .catch(() => {});
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const pathname = usePathname();
 
@@ -44,12 +63,6 @@ export default function Navbar() {
     { name: "Services", path: "/services" },
     { name: "Products", path: "/items" },
     { name: "Contact", path: "/contact" },
-  ];
-
-  const phoneNumbers = [
-    "+91 9257984336",
-    "+91 8529833535",
-    "+91 9983301657",
   ];
 
   return (

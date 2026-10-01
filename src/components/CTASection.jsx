@@ -2,13 +2,33 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
   PhoneCall,
 } from "lucide-react";
+import { fetchContactData, normalizeContactData } from "@/lib/data-fetcher";
 
 export default function CTASection({ city }) {
+  const [phoneNumbers, setPhoneNumbers] = useState(() => normalizeContactData(null).phones);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchContactData()
+      .then((data) => {
+        if (isMounted && data) {
+          const norm = normalizeContactData(data);
+          if (norm.phones && norm.phones.length > 0) {
+            setPhoneNumbers(norm.phones);
+          }
+        }
+      })
+      .catch(() => {});
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const pathname = usePathname();
 
@@ -44,6 +64,8 @@ export default function CTASection({ city }) {
 
     return `/${districtSlug}${path}`;
   };
+
+  const primaryPhone = phoneNumbers[0] || "+91 9257984336";
 
   return (
     <section className="section-padding bg-[#F8F5F0]">
@@ -114,11 +136,17 @@ export default function CTASection({ city }) {
                 <div className="mt-6 space-y-2 border-t border-[#E6D8C8] pt-4 text-sm font-semibold text-[#6F4E37]">
                   <p className="text-xs text-[#8B5A2B] font-bold uppercase tracking-wider">Direct Hotline:</p>
                   <div className="flex flex-wrap gap-2">
-                    <a href="tel:+919257984336" className="hover:text-[#8B5A2B] underline">+91 9257984336</a>
-                    <span>•</span>
-                    <a href="tel:+918529833535" className="hover:text-[#8B5A2B] underline">+91 8529833535</a>
-                    <span>•</span>
-                    <a href="tel:+919983301657" className="hover:text-[#8B5A2B] underline">+91 9983301657</a>
+                    {phoneNumbers.map((num, idx) => (
+                      <span key={idx} className="flex items-center gap-2">
+                        <a
+                          href={`tel:${num.replace(/\s+/g, "")}`}
+                          className="hover:text-[#8B5A2B] underline"
+                        >
+                          {num}
+                        </a>
+                        {idx < phoneNumbers.length - 1 && <span>•</span>}
+                      </span>
+                    ))}
                   </div>
                 </div>
 
@@ -141,7 +169,7 @@ export default function CTASection({ city }) {
                   </Link>
 
                   <a
-                    href="tel:+919257984336"
+                    href={`tel:${primaryPhone.replace(/\s+/g, "")}`}
                     className="rounded-2xl border border-[#D7C2AE] bg-white px-6 py-4 text-center font-semibold text-[#6F4E37] transition-all duration-300 hover:-translate-y-1 hover:bg-[#F8F5F0] hover:border-[#8B5A2B]"
                   >
                     Call Now

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { fetchHomeData } from "@/lib/data-fetcher";
+import { fetchHomeData, fetchContactData, normalizeContactData } from "@/lib/data-fetcher";
 import {
   ArrowRight,
   ShieldCheck,
@@ -17,6 +17,7 @@ import { FaInstagram, FaFacebook } from "react-icons/fa";
 
 export default function HeroSection({ city }) {
   const [loading, setLoading] = useState(true);
+  const [phoneNumbers, setPhoneNumbers] = useState(() => normalizeContactData(null).phones);
   const [heroData, setHeroData] = useState({
     title: "",
     description: "",
@@ -27,10 +28,19 @@ export default function HeroSection({ city }) {
   useEffect(() => {
     let active = true;
 
-    const loadHeroData = async () => {
+    const loadData = async () => {
       try {
-        const homeData = await fetchHomeData();
+        const [homeData, contactRes] = await Promise.all([
+          fetchHomeData(),
+          fetchContactData().catch(() => null),
+        ]);
         if (active && homeData) setHeroData(homeData);
+        if (active && contactRes) {
+          const norm = normalizeContactData(contactRes);
+          if (norm.phones && norm.phones.length > 0) {
+            setPhoneNumbers(norm.phones);
+          }
+        }
       } catch (error) {
         console.error("Error fetching hero data:", error);
       } finally {
@@ -38,7 +48,7 @@ export default function HeroSection({ city }) {
       }
     };
 
-    loadHeroData();
+    loadData();
     return () => {
       active = false;
     };
@@ -151,18 +161,15 @@ export default function HeroSection({ city }) {
             <span className="flex items-center gap-1.5 font-bold text-[#8B5A2B]">
               <PhoneCall size={14} /> Call:
             </span>
-            <a
-              href="tel:+919257984336"
-              className="rounded-md bg-[#F5EBDD] px-2.5 py-1.5 transition hover:bg-[#EDE0CF]"
-            >
-              +91 9257984336
-            </a>
-            <a
-              href="tel:+918529833535"
-              className="rounded-md bg-[#F5EBDD] px-2.5 py-1.5 transition hover:bg-[#EDE0CF]"
-            >
-              +91 8529833535
-            </a>
+            {phoneNumbers.slice(0, 2).map((num, idx) => (
+              <a
+                key={idx}
+                href={`tel:${num.replace(/\s+/g, "")}`}
+                className="rounded-md bg-[#F5EBDD] px-2.5 py-1.5 transition hover:bg-[#EDE0CF]"
+              >
+                {num}
+              </a>
+            ))}
           </div>
 
           <div className="mt-5 flex flex-wrap items-center gap-3">
@@ -254,10 +261,10 @@ export default function HeroSection({ city }) {
                     Quick Inquiry
                   </p>
                   <a
-                    href="tel:+919257984336"
+                    href={`tel:${(phoneNumbers[0] || "+919257984336").replace(/\s+/g, "")}`}
                     className="text-xs font-semibold hover:underline sm:text-sm"
                   >
-                    +91 9257984336
+                    {phoneNumbers[0] || "+91 9257984336"}
                   </a>
                 </div>
               </div>

@@ -16,11 +16,11 @@ import {
 
 import PageBanner from "@/components/PageBanner";
 import CTASection from "@/components/CTASection";
-import { fetchContactData, fetchDistricts } from "@/lib/data-fetcher";
+import { fetchContactData, fetchDistricts, normalizeContactData } from "@/lib/data-fetcher";
 
 export default function ContactPage({ city: initialCity }) {
   const [loading, setLoading] = useState(true);
-  const [contactInfo, setContactInfo] = useState([]);
+  const [contactData, setContactData] = useState(() => normalizeContactData(null));
   const [availableDistricts, setAvailableDistricts] = useState([]);
   const [submitting, setSubmitting] = useState(false);
 
@@ -130,10 +130,8 @@ export default function ContactPage({ city: initialCity }) {
     const loadContactData = async () => {
       try {
         const contactRes = await fetchContactData();
-        if (contactRes && contactRes.contactInfo) {
-          setContactInfo(contactRes.contactInfo || []);
-        } else if (Array.isArray(contactRes)) {
-          setContactInfo(contactRes);
+        if (contactRes) {
+          setContactData(normalizeContactData(contactRes));
         }
 
         const distList = await fetchDistricts();
@@ -157,21 +155,14 @@ export default function ContactPage({ city: initialCity }) {
     loadContactData();
   }, []);
 
-  const phone =
-    contactInfo.find((x) => x.label === "Phone Number")?.value || "";
-  const email =
-    contactInfo.find((x) => x.label === "Email Address")?.value || "";
-  const baseAddress =
-    contactInfo.find((x) => x.label === "Office Address")?.value || "";
-  const hours =
-    contactInfo.find((x) => x.label === "Working Hours")?.value || "";
+  const { phones, email, address: baseAddress, workingHours: hours } = contactData;
 
   // Construct dynamic district address for location map & contact display
   const dynamicDistrictAddress = selectedDistrict
     ? `Global Biomedical Service Center, ${selectedDistrict} District, Rajasthan, India`
     : "";
   const mapAddressQuery = encodeURIComponent(
-    dynamicDistrictAddress || "Global Biomedical, Jaipur, Rajasthan, India"
+    baseAddress || dynamicDistrictAddress || "Global Biomedical, Jaipur, Rajasthan, India"
   );
 
   if (loading) {
@@ -278,39 +269,32 @@ export default function ContactPage({ city: initialCity }) {
             {/* Contact Cards */}
             <div className="space-y-5 mt-8">
               {/* Phone Numbers */}
-              <div className="flex items-start gap-5 bg-[#FFFDF9] p-6 rounded-[28px] border border-[#E6D8C8] shadow-sm hover:border-[#C49A6C] transition-all">
-                <div className="flex h-14 w-14 items-center justify-center shrink-0 rounded-2xl border border-[#E6CBA8] bg-gradient-to-br from-[#FFF8EE] via-[#FCE8CC] to-[#F4D2A5] text-[#7A4E26] shadow-sm">
-                  <Phone size={24} />
-                </div>
-                <div>
-                  <h4 className="font-bold text-lg text-[#2F241E]">
-                    Customer & Technical Support
-                  </h4>
-                  <p className="text-xs text-[#8B5A2B] font-semibold mt-0.5">
-                    24/7 Breakdown Assistance Available
-                  </p>
-                  <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-slate-700 mt-2 text-sm font-semibold">
-                    <a
-                      href="tel:+919257984336"
-                      className="hover:text-[#8B5A2B] transition-colors"
-                    >
-                      +91 9257984336
-                    </a>
-                    <a
-                      href="tel:+918529833535"
-                      className="hover:text-[#8B5A2B] transition-colors"
-                    >
-                      +91 8529833535
-                    </a>
-                    <a
-                      href="tel:+919983301657"
-                      className="hover:text-[#8B5A2B] transition-colors"
-                    >
-                      +91 9983301657
-                    </a>
+              {phones.length > 0 && (
+                <div className="flex items-start gap-5 bg-[#FFFDF9] p-6 rounded-[28px] border border-[#E6D8C8] shadow-sm hover:border-[#C49A6C] transition-all">
+                  <div className="flex h-14 w-14 items-center justify-center shrink-0 rounded-2xl border border-[#E6CBA8] bg-gradient-to-br from-[#FFF8EE] via-[#FCE8CC] to-[#F4D2A5] text-[#7A4E26] shadow-sm">
+                    <Phone size={24} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-lg text-[#2F241E]">
+                      Customer & Technical Support
+                    </h4>
+                    <p className="text-xs text-[#8B5A2B] font-semibold mt-0.5">
+                      24/7 Breakdown Assistance Available
+                    </p>
+                    <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-slate-700 mt-2 text-sm font-semibold">
+                      {phones.map((num, idx) => (
+                        <a
+                          key={idx}
+                          href={`tel:${num.replace(/\s+/g, "")}`}
+                          className="hover:text-[#8B5A2B] transition-colors"
+                        >
+                          {num}
+                        </a>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               {/* Email Address */}
               {email && (
@@ -323,26 +307,31 @@ export default function ContactPage({ city: initialCity }) {
                       Email Inquiry
                     </h4>
                     <p className="text-slate-600 mt-1 text-sm md:text-base font-medium">
-                      {email}
+                      <a
+                        href={`mailto:${email}`}
+                        className="hover:text-[#8B5A2B] transition-colors"
+                      >
+                        {email}
+                      </a>
                     </p>
                   </div>
                 </div>
               )}
 
-              {/* District Office Address */}
-              {dynamicDistrictAddress && (
+              {/* Office Address */}
+              {(baseAddress || dynamicDistrictAddress) && (
                 <div className="flex items-start gap-5 bg-[#FFFDF9] p-6 rounded-[28px] border border-[#E6D8C8] shadow-sm hover:border-[#C49A6C] transition-all">
                   <div className="flex h-14 w-14 items-center justify-center shrink-0 rounded-2xl border border-[#E6CBA8] bg-gradient-to-br from-[#FFF8EE] via-[#FCE8CC] to-[#F4D2A5] text-[#7A4E26] shadow-sm">
                     <MapPin size={24} />
                   </div>
                   <div>
                     <h4 className="font-bold text-lg text-[#2F241E]">
-                      {selectedDistrict} District Hub
+                      {selectedDistrict ? `${selectedDistrict} District Hub & Office` : "Registered Office / Address"}
                     </h4>
                     <p className="text-slate-600 mt-1 text-sm md:text-base font-medium">
-                      {dynamicDistrictAddress}
+                      {baseAddress || dynamicDistrictAddress}
                     </p>
-                    {baseAddress && (
+                    {selectedDistrict && baseAddress && dynamicDistrictAddress !== baseAddress && (
                       <p className="text-xs text-[#8B5A2B] mt-1 font-semibold">
                         Head Office: {baseAddress}
                       </p>
