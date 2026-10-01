@@ -9,14 +9,14 @@ export { makeSlug };
 
 /**
  * Server-side catalog fetcher with zero stale caching.
- * Resolves directly from SQLite Admin API on every request.
+ * Resolves directly from MongoDB Admin API on every request.
  */
 export async function fetchFullCatalog(options = {}) {
   return await fetchAdminCatalog(options);
 }
 
 /**
- * Fetch districts for the website from SQLite Admin API
+ * Fetch districts for the website from MongoDB Admin API
  * NO hardcoded fallback array.
  */
 export async function fetchDistricts() {

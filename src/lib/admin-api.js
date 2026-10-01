@@ -1,15 +1,13 @@
 import { getCompanyAndWebsiteConfig, isItemVisibleOnWebsite } from "./companyConfig.js";
 
 /**
- * SQLite Admin API Base URL configuration with full fallback chain
+ * MongoDB Admin API Base URL configuration with full fallback chain
  */
 export const ADMIN_API_BASE_URL =
   process.env.ADMIN_API_BASE_URL ||
   process.env.ADMIN_API_URL ||
-  process.env.SQLITE_ADMIN_API_URL ||
   process.env.NEXT_PUBLIC_ADMIN_API_BASE_URL ||
   process.env.NEXT_PUBLIC_ADMIN_API_URL ||
-  process.env.NEXT_PUBLIC_SQLITE_ADMIN_API_URL ||
   "https://admin.rajbiosis.app";
 
 /**
@@ -29,7 +27,7 @@ const makeSlug = (text = "") =>
     .replace(/\s+/g, "-");
 
 /**
- * Fetch full catalog from SQLite Admin API.
+ * Fetch full catalog from MongoDB Admin API.
  * NO static hardcoded fallback products are returned.
  */
 export async function fetchAdminCatalog(customOptions = {}) {
@@ -114,13 +112,13 @@ export async function fetchAdminCatalog(customOptions = {}) {
 
     return allProducts;
   } catch (err) {
-    console.error("[admin-api] Error fetching catalog from SQLite Admin API:", err);
+    console.error("[admin-api] Error fetching catalog from MongoDB Admin API:", err);
     return [];
   }
 }
 
 /**
- * Fetch dynamic site data from SQLite Admin API by type (home, contact, services, etc.)
+ * Fetch dynamic site data from MongoDB Admin API by type (home, contact, services, etc.)
  * NO hardcoded static text/data fallback is returned.
  */
 export async function fetchAdminSiteData(type, customOptions = {}) {
@@ -165,7 +163,7 @@ export async function fetchAdminSiteData(type, customOptions = {}) {
 }
 
 /**
- * Fetch all districts from SQLite Admin API
+ * Fetch all districts from MongoDB Admin API
  */
 export async function fetchAdminDistricts(customOptions = {}) {
   const config = getCompanyAndWebsiteConfig();
@@ -200,7 +198,7 @@ export async function fetchAdminDistricts(customOptions = {}) {
 }
 
 /**
- * Fetch single district data from SQLite Admin API
+ * Fetch single district data from MongoDB Admin API
  */
 export async function fetchAdminDistrict(districtSlug, customOptions = {}) {
   if (!districtSlug) return null;
@@ -241,43 +239,43 @@ export async function fetchAdminDistrict(districtSlug, customOptions = {}) {
 }
 
 /**
- * Submit Contact Query to SQLite Admin API
+ * Submit Contact Query to MongoDB Admin API
  */
 export async function submitAdminContactQuery(payload) {
-  const url = getAdminApiUrl("/api/contact-query");
+  const url = getAdminApiUrl("/api/public-query");
   try {
+    const { websiteId, ...data } = payload || {};
     const res = await fetch(url, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
+      cache: "no-store",
+      headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
+      body: JSON.stringify({ type: "contact", websiteId, data }),
     });
-    const data = await res.json().catch(() => ({}));
-    return { ok: res.ok, data };
+    const result = await res.json().catch(() => ({}));
+    return { ok: res.ok && result.success === true, data: result, status: res.status };
   } catch (err) {
-    console.warn("[admin-api] SQLite Admin contact-query forwarding:", err.message);
+    console.error("[admin-api] MongoDB Admin contact-query forwarding failed:", err.message);
     return { ok: false, error: err.message };
   }
 }
 
 /**
- * Submit Product Query to SQLite Admin API
+ * Submit Product Query to MongoDB Admin API
  */
 export async function submitAdminProductQuery(payload) {
-  const url = getAdminApiUrl("/api/product-query");
+  const url = getAdminApiUrl("/api/public-query");
   try {
+    const { websiteId, ...data } = payload || {};
     const res = await fetch(url, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
+      cache: "no-store",
+      headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
+      body: JSON.stringify({ type: "product", websiteId, data }),
     });
-    const data = await res.json().catch(() => ({}));
-    return { ok: res.ok, data };
+    const result = await res.json().catch(() => ({}));
+    return { ok: res.ok && result.success === true, data: result, status: res.status };
   } catch (err) {
-    console.warn("[admin-api] SQLite Admin product-query forwarding:", err.message);
+    console.error("[admin-api] MongoDB Admin product-query forwarding failed:", err.message);
     return { ok: false, error: err.message };
   }
 }

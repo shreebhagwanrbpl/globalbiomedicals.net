@@ -25,11 +25,11 @@ export async function POST(request) {
       ...extra
     } = body || {};
 
-    if (!name || (!phone && !email)) {
+    if (!name || !phone) {
       return NextResponse.json(
         {
           success: false,
-          error: "Name and Phone/Email are required",
+          error: "Name and Phone are required",
         },
         { status: 400 }
       );
@@ -54,6 +54,12 @@ export async function POST(request) {
     };
 
     const result = await submitAdminProductQuery(payload);
+    if (!result.ok) {
+      return NextResponse.json(
+        { success: false, error: result.data?.error || result.error || "Admin MongoDB query save failed" },
+        { status: result.status && result.status >= 400 ? result.status : 502, headers: { "Cache-Control": "no-store" } }
+      );
+    }
 
     return NextResponse.json(
       {

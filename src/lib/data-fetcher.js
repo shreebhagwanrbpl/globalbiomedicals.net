@@ -13,9 +13,9 @@ export const makeSlug = (text = "") =>
     .replace(/\s+/g, "-");
 
 /**
- * Fetch and process the entire products catalog from SQLite Admin API.
+ * Fetch and process the entire products catalog from MongoDB Admin API.
  * In browser: queries /api/catalog (with zero cache).
- * On server: queries SQLite Admin API directly.
+ * On server: queries MongoDB Admin API directly.
  * NO static hardcoded fallback products!
  */
 export async function fetchFullCatalog(options = {}) {

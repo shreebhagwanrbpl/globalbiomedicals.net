@@ -125,7 +125,7 @@ export default function ContactPage({ city: initialCity }) {
     }
   };
 
-  // Fetch SQLite Admin API districts & contact data
+  // Fetch MongoDB Admin API districts & contact data
   useEffect(() => {
     const loadContactData = async () => {
       try {

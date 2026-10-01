@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { fetchHomeData } from "@/lib/data-fetcher";
-
 import {
   ArrowRight,
   ShieldCheck,
@@ -18,7 +17,6 @@ import { FaInstagram, FaFacebook } from "react-icons/fa";
 
 export default function HeroSection({ city }) {
   const [loading, setLoading] = useState(true);
-
   const [heroData, setHeroData] = useState({
     title: "",
     description: "",
@@ -27,51 +25,48 @@ export default function HeroSection({ city }) {
   });
 
   useEffect(() => {
+    let active = true;
+
     const loadHeroData = async () => {
       try {
         const homeData = await fetchHomeData();
-        if (homeData) {
-          setHeroData(homeData);
-        }
+        if (active && homeData) setHeroData(homeData);
       } catch (error) {
         console.error("Error fetching hero data:", error);
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     };
 
     loadHeroData();
+    return () => {
+      active = false;
+    };
   }, []);
 
-  // District Routing
-  const districtSlug = city
-    ? city.toLowerCase().replace(/\s+/g, "-")
-    : "";
-
-  const makeLink = (path) => {
-    return districtSlug ? `/${districtSlug}${path}` : path;
-  };
+  const districtSlug = city ? city.toLowerCase().trim().replace(/\s+/g, "-") : "";
+  const makeLink = (path) => (districtSlug ? `/${districtSlug}${path}` : path);
 
   const capabilities = [
     {
-      icon: <Activity size={24} />,
+      icon: <Activity size={20} />,
       title: "Lab & Testing Equipment",
-      desc: "Modern CBC, Biochemistry & Hematology Machines",
+      desc: "CBC, biochemistry and hematology systems.",
     },
     {
-      icon: <Microscope size={24} />,
+      icon: <Microscope size={20} />,
       title: "Essential Reagents",
-      desc: "Fresh, Certified Reagents with Safe Temperature Delivery",
+      desc: "Diagnostic reagents for laboratory workflows.",
     },
     {
-      icon: <ShieldCheck size={24} />,
+      icon: <ShieldCheck size={20} />,
       title: "Setup & Calibration",
-      desc: "Complete On-Site Assembly, Testing & Staff Training",
+      desc: "Installation, calibration and staff guidance.",
     },
     {
-      icon: <HeartPulse size={24} />,
-      title: "24/7 Rapid Assistance",
-      desc: "Quick Repairs and Maintenance for Hospitals & Labs",
+      icon: <HeartPulse size={20} />,
+      title: "Service & Maintenance",
+      desc: "Support for hospitals and diagnostic labs.",
     },
   ];
 
@@ -86,239 +81,217 @@ export default function HeroSection({ city }) {
     heroData?.btnText ||
     heroData?.btn1 ||
     heroData?.button1 ||
-    "";
+    "Explore Products";
   const btn2Text =
     heroData?.button2Text ||
     heroData?.btn2Text ||
     heroData?.btn2 ||
     heroData?.button2 ||
-    "";
+    "Get in Touch";
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-[#FFFDF9] via-[#FDFBF7] to-[#F8F5F0] py-16 lg:py-24">
-      {/* Background Decorative Glows */}
-      <div className="absolute top-10 left-1/4 h-96 w-96 rounded-full bg-[#E6D8C8]/30 blur-[130px] pointer-events-none" />
-      <div className="absolute bottom-10 right-10 h-96 w-96 rounded-full bg-[#8B5A2B]/10 blur-[140px] pointer-events-none" />
+    <section className="relative isolate overflow-hidden bg-gradient-to-br from-[#FFFDF9] via-[#FDFBF7] to-[#F8F5F0] py-7 sm:py-9 lg:py-11">
+      {/* Subtle decorative glows */}
+      <div className="pointer-events-none absolute -left-20 top-0 h-56 w-56 rounded-full bg-[#E6D8C8]/30 blur-3xl sm:h-72 sm:w-72" />
+      <div className="pointer-events-none absolute -right-16 bottom-0 h-56 w-56 rounded-full bg-[#8B5A2B]/10 blur-3xl sm:h-72 sm:w-72" />
 
-      <div className="container-custom relative z-10 grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-
-        {/* Left Content (Cols 1-7) */}
+      <div className="container-custom relative z-10 mx-auto grid max-w-7xl grid-cols-1 items-center gap-7 px-4 sm:px-6 lg:grid-cols-12 lg:gap-8">
+        {/* Left content */}
         <motion.div
-          className="lg:col-span-7"
-          initial={{ opacity: 0, y: 50 }}
+          className="min-w-0 lg:col-span-7"
+          initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* Top Badge */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#E6D8C8] bg-white/80 backdrop-blur-md px-5 py-2.5 text-xs sm:text-sm font-semibold text-[#6F4E37] shadow-md mb-8">
-            <Sparkles size={16} className="text-[#8B5A2B] animate-pulse" />
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#E6D8C8] bg-white/85 px-3.5 py-2 text-[11px] font-semibold text-[#6F4E37] shadow-sm sm:mb-5 sm:text-xs">
+            <Sparkles size={14} className="shrink-0 text-[#8B5A2B]" />
             Trusted Partner for Biomedical Equipment
           </div>
 
-          {/* Main Title */}
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.15] tracking-tight text-[#2F241E]">
+          <h1 className="max-w-3xl text-[2rem] font-extrabold leading-[1.12] tracking-tight text-[#2F241E] sm:text-4xl lg:text-[2.8rem] xl:text-5xl">
             {loading ? (
-              <div className="animate-pulse space-y-4">
-                <div className="h-12 rounded-xl bg-[#ECE4DA] w-[85%]" />
-                <div className="h-12 rounded-xl bg-[#ECE4DA] w-[65%]" />
-                <div className="h-12 rounded-xl bg-[#ECE4DA] w-[75%]" />
-              </div>
+              <span className="block animate-pulse">
+                <span className="mb-2 block h-8 w-[88%] rounded-lg bg-[#ECE4DA] sm:h-10" />
+                <span className="block h-8 w-[65%] rounded-lg bg-[#ECE4DA] sm:h-10" />
+              </span>
             ) : (
               <>
-                {titleText}
-                {city ? (
+                {titleText || "Advanced Biomedical Equipment for Modern Healthcare"}
+                {city && (
                   <>
-                    <br />
-                    <span className="bg-gradient-to-r from-[#6F4E37] via-[#8B5A2B] to-[#C49A6C] bg-clip-text text-transparent text-3xl lg:text-5xl font-bold">
+                    {" "}
+                    <span className="bg-gradient-to-r from-[#6F4E37] via-[#8B5A2B] to-[#C49A6C] bg-clip-text text-transparent">
                       in {city}
                     </span>
                   </>
-                ) : null}
+                )}
               </>
             )}
           </h1>
 
-          {/* Description */}
-          {loading ? (
-            <div className="animate-pulse mt-6 space-y-3">
-              <div className="h-4 rounded bg-[#ECE4DA] w-full" />
-              <div className="h-4 rounded bg-[#ECE4DA] w-[90%]" />
-            </div>
-          ) : descText ? (
-            <p className="mt-6 max-w-2xl text-base sm:text-lg lg:text-xl leading-relaxed text-[#5E5146]">
+          {!loading && descText ? (
+            <p className="mt-4 max-w-2xl text-sm leading-6 text-[#5E5146] sm:mt-5 sm:text-base sm:leading-7">
               {descText}
               {city && (
                 <>
                   {" "}
-                  across <strong className="text-[#2F241E]">{city}</strong>.
+                  Supporting healthcare facilities across{" "}
+                  <strong className="text-[#2F241E]">{city}</strong>.
                 </>
               )}
             </p>
+          ) : loading ? (
+            <div className="mt-4 max-w-xl animate-pulse space-y-2">
+              <div className="h-3.5 w-full rounded bg-[#ECE4DA]" />
+              <div className="h-3.5 w-4/5 rounded bg-[#ECE4DA]" />
+            </div>
           ) : null}
 
-          {/* Quick Call Hotlines */}
-          <div className="mt-6 flex flex-wrap items-center gap-3 text-xs sm:text-sm font-semibold text-[#6F4E37]">
-            <span className="flex items-center gap-1.5 text-[#8B5A2B] font-bold">
-              <PhoneCall size={16} /> Hotlines:
+          <div className="mt-4 flex flex-wrap items-center gap-2 text-xs font-semibold text-[#6F4E37] sm:mt-5 sm:gap-3 sm:text-sm">
+            <span className="flex items-center gap-1.5 font-bold text-[#8B5A2B]">
+              <PhoneCall size={14} /> Call:
             </span>
-            <a href="tel:+919257984336" className="hover:text-[#8B5A2B] underline bg-[#F5EBDD] px-3 py-1 rounded-lg transition">+91 9257984336</a>
-            <a href="tel:+918529833535" className="hover:text-[#8B5A2B] underline bg-[#F5EBDD] px-3 py-1 rounded-lg transition">+91 8529833535</a>
-            <a href="tel:+919983301657" className="hover:text-[#8B5A2B] underline bg-[#F5EBDD] px-3 py-1 rounded-lg transition">+91 9983301657</a>
+            <a
+              href="tel:+919257984336"
+              className="rounded-md bg-[#F5EBDD] px-2.5 py-1.5 transition hover:bg-[#EDE0CF]"
+            >
+              +91 9257984336
+            </a>
+            <a
+              href="tel:+918529833535"
+              className="rounded-md bg-[#F5EBDD] px-2.5 py-1.5 transition hover:bg-[#EDE0CF]"
+            >
+              +91 8529833535
+            </a>
           </div>
 
-          {/* Action Buttons */}
-          {(btn1Text || btn2Text || loading) && (
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              {loading ? (
-                <>
-                  <div className="h-14 w-48 animate-pulse rounded-2xl bg-[#ECE4DA]" />
-                  <div className="h-14 w-40 animate-pulse rounded-2xl bg-[#ECE4DA]" />
-                </>
-              ) : (
-                <>
-                  {btn1Text ? (
-                    <Link href={makeLink("/items")}>
-                      <button className="group inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-[#6F4E37] via-[#8B5A2B] to-[#A06A3B] px-7 py-4 font-semibold text-white shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-                        <span>{btn1Text}</span>
-                        <ArrowRight
-                          size={18}
-                          className="transition-transform duration-300 group-hover:translate-x-1"
-                        />
-                      </button>
-                    </Link>
-                  ) : null}
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <Link
+              href={makeLink("/items")}
+              className="group inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#6F4E37] via-[#8B5A2B] to-[#A06A3B] px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg"
+            >
+              {loading ? "Explore Products" : btn1Text}
+              <ArrowRight
+                size={17}
+                className="transition-transform group-hover:translate-x-1"
+              />
+            </Link>
 
-                  {btn2Text ? (
-                    <Link href={makeLink("/contact")}>
-                      <button className="group inline-flex items-center justify-center gap-2.5 rounded-2xl border border-[#D9C7B5] bg-white px-6 py-4 font-semibold text-[#6F4E37] shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-[#8B5A2B] hover:bg-[#F8F5F0] hover:shadow-lg">
-                        <PhoneCall
-                          size={18}
-                          className="text-[#8B5A2B] transition-transform duration-300 group-hover:scale-110"
-                        />
-                        <span>{btn2Text}</span>
-                      </button>
-                    </Link>
-                  ) : null}
-                </>
-              )}
-            </div>
-          )}
+            <Link
+              href={makeLink("/contact")}
+              className="group inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[#D9C7B5] bg-white px-5 py-3 text-sm font-semibold text-[#6F4E37] shadow-sm transition hover:-translate-y-0.5 hover:border-[#8B5A2B] hover:bg-[#F8F5F0]"
+            >
+              <PhoneCall size={16} className="text-[#8B5A2B]" />
+              {loading ? "Get in Touch" : btn2Text}
+            </Link>
+          </div>
 
-          {/* Quick Stats Badges */}
-          <div className="mt-12 grid grid-cols-3 gap-4 sm:gap-6 border-t border-[#E6D8C8] pt-8">
-            <div>
-              <h3 className="bg-gradient-to-r from-[#6F4E37] via-[#8B5A2B] to-[#C49A6C] bg-clip-text text-3xl sm:text-4xl font-black text-transparent">
-                10+
-              </h3>
-              <p className="mt-1 text-xs sm:text-sm font-medium text-[#6B5F55]">
-                Years of Service
-              </p>
-            </div>
-
-            <div>
-              <h3 className="bg-gradient-to-r from-[#6F4E37] via-[#8B5A2B] to-[#C49A6C] bg-clip-text text-3xl sm:text-4xl font-black text-transparent">
-                500+
-              </h3>
-              <p className="mt-1 text-xs sm:text-sm font-medium text-[#6B5F55]">
-                Happy Healthcare Clients
-              </p>
-            </div>
-
-            <div>
-              <h3 className="bg-gradient-to-r from-[#6F4E37] via-[#8B5A2B] to-[#C49A6C] bg-clip-text text-3xl sm:text-4xl font-black text-transparent">
-                100%
-              </h3>
-              <p className="mt-1 text-xs sm:text-sm font-medium text-[#6B5F55]">
-                On-Time Support
-              </p>
-            </div>
+          {/* Compact statistics */}
+          <div className="mt-6 grid max-w-xl grid-cols-3 gap-3 border-t border-[#E6D8C8] pt-4 sm:mt-7 sm:gap-5 sm:pt-5">
+            {[
+              { value: "10+", label: "Years of Service" },
+              { value: "500+", label: "Healthcare Clients" },
+              { value: "24/7", label: "Service Support" },
+            ].map((stat) => (
+              <div key={stat.label} className="min-w-0">
+                <h3 className="bg-gradient-to-r from-[#6F4E37] via-[#8B5A2B] to-[#C49A6C] bg-clip-text text-2xl font-black leading-tight text-transparent sm:text-3xl">
+                  {stat.value}
+                </h3>
+                <p className="mt-1 text-[10px] leading-4 text-[#6B5F55] sm:text-xs sm:leading-5">
+                  {stat.label}
+                </p>
+              </div>
+            ))}
           </div>
         </motion.div>
 
-        {/* Right Content: Modern Interactive Showcase Grid (Cols 8-12) */}
+        {/* Right showcase: compact height */}
         <motion.div
-          className="lg:col-span-5"
-          initial={{ opacity: 0, x: 50 }}
+          className="min-w-0 lg:col-span-5"
+          initial={{ opacity: 0, x: 18 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.55, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="relative rounded-[36px] border border-[#E6D8C8] bg-gradient-to-br from-[#FFFDF9] via-[#FDFBF7] to-[#F5ECE0] p-6 sm:p-8 shadow-2xl">
-
-            {/* Top Showcase Header */}
-            <div className="flex items-center justify-between border-b border-[#E6D8C8] pb-5">
-              <div>
-                <span className="text-xs font-bold text-[#8B5A2B] uppercase tracking-wider">Solutions Overview</span>
-                <h3 className="text-xl font-extrabold text-[#2F241E] mt-0.5">Global Biomedical Inc.</h3>
+          <div className="rounded-3xl border border-[#E6D8C8] bg-white/70 p-4 shadow-lg backdrop-blur-sm sm:p-5">
+            <div className="flex items-center justify-between gap-3 border-b border-[#E6D8C8] pb-3">
+              <div className="min-w-0">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#8B5A2B]">
+                  Solutions Overview
+                </span>
+                <h2 className="mt-0.5 text-lg font-extrabold text-[#2F241E] sm:text-xl">
+                  Global Biomedical Inc.
+                </h2>
               </div>
-              <div className="rounded-2xl bg-[#F5EBDD] p-3">
-                <Microscope className="text-[#8B5A2B]" size={28} />
+              <div className="shrink-0 rounded-xl bg-[#F5EBDD] p-2.5">
+                <Microscope className="text-[#8B5A2B]" size={23} />
               </div>
             </div>
 
-            {/* 4 Feature Cards Grid */}
-            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {capabilities.map((item, idx) => (
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {capabilities.map((item) => (
                 <div
-                  key={idx}
-                  className="group rounded-2xl border border-[#E6D8C8] bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#8B5A2B] hover:shadow-md"
+                  key={item.title}
+                  className="group rounded-xl border border-[#E6D8C8] bg-white p-3 transition hover:-translate-y-0.5 hover:border-[#C49A6C] hover:shadow-sm"
                 >
-                  <div className="rounded-xl bg-[#F5EBDD] text-[#8B5A2B] p-2.5 w-fit group-hover:bg-[#6F4E37] group-hover:text-white transition-all duration-300">
+                  <div className="w-fit rounded-lg bg-[#F5EBDD] p-2 text-[#8B5A2B] transition group-hover:bg-[#6F4E37] group-hover:text-white">
                     {item.icon}
                   </div>
-                  <h4 className="mt-3 text-sm font-bold text-[#2F241E] group-hover:text-[#8B5A2B] transition-colors">
+                  <h3 className="mt-2 text-sm font-bold text-[#2F241E]">
                     {item.title}
-                  </h4>
-                  <p className="mt-1 text-xs text-[#6B5F55] leading-relaxed">
+                  </h3>
+                  <p className="mt-1 text-xs leading-5 text-[#6B5F55]">
                     {item.desc}
                   </p>
                 </div>
               ))}
             </div>
 
-            {/* Live Interactive Info Banner */}
-            <div className="mt-6 rounded-2xl bg-[#2F241E] p-5 text-white shadow-lg">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="h-3 w-3 rounded-full bg-emerald-400 animate-ping" />
-                  <div>
-                    <h5 className="text-xs font-bold text-[#C49A6C] uppercase tracking-wider">Fast Inquiry Response</h5>
-                    <p className="text-sm font-semibold text-white">Call: +91 9257984336</p>
-                  </div>
+            <div className="mt-4 flex items-center justify-between gap-3 rounded-xl bg-[#2F241E] p-3.5 text-white sm:p-4">
+              <div className="flex min-w-0 items-center gap-2.5">
+                <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-400" />
+                <div className="min-w-0">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#C49A6C]">
+                    Quick Inquiry
+                  </p>
+                  <a
+                    href="tel:+919257984336"
+                    className="text-xs font-semibold hover:underline sm:text-sm"
+                  >
+                    +91 9257984336
+                  </a>
                 </div>
-                <Link href={makeLink("/contact")}>
-                  <button className="rounded-xl bg-gradient-to-r from-[#8B5A2B] to-[#C49A6C] px-3.5 py-2 text-xs font-bold text-white shadow hover:opacity-90 transition">
-                    Inquire Now
-                  </button>
-                </Link>
               </div>
+              <Link
+                href={makeLink("/contact")}
+                className="shrink-0 rounded-lg bg-gradient-to-r from-[#8B5A2B] to-[#C49A6C] px-3 py-2 text-xs font-bold text-white transition hover:opacity-90"
+              >
+                Inquire Now
+              </Link>
             </div>
 
-            {/* Social Connect Footer Card */}
-            <div className="mt-4 flex items-center justify-between rounded-xl border border-[#E6D8C8] bg-white px-4 py-3 text-xs text-[#5E5146]">
-              <span className="font-semibold">Follow Official Handles:</span>
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[#E6D8C8] bg-white px-3 py-2.5 text-[11px] text-[#5E5146]">
+              <span className="font-semibold">Follow Official Handles</span>
               <div className="flex items-center gap-3">
                 <a
                   href="https://www.instagram.com/globalbiomedicals/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-[#E1306C] hover:underline font-medium"
+                  className="flex items-center gap-1 font-medium text-[#E1306C] hover:underline"
                 >
-                  <FaInstagram size={14} /> Instagram
+                  <FaInstagram size={13} /> Instagram
                 </a>
                 <a
                   href="https://www.facebook.com/people/Global-Biomedicals-Inc/100090524869295/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-[#1877F2] hover:underline font-medium"
+                  className="flex items-center gap-1 font-medium text-[#1877F2] hover:underline"
                 >
-                  <FaFacebook size={14} /> Facebook
+                  <FaFacebook size={13} /> Facebook
                 </a>
               </div>
             </div>
-
           </div>
         </motion.div>
-
       </div>
     </section>
   );
