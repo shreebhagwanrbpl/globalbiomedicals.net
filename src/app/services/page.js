@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 import { SITE_URL, SITE_NAME } from "@/lib/constants";
 import ServicesClient from "./ServicesClient";
 
